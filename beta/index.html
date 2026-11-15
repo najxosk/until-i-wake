@@ -321,7 +321,7 @@ const spots=$('#spots'),frame=$('#frame'),stage=$('#stage');
 function layout(){
   const W=stage.clientWidth,H=stage.clientHeight;
   let w=W,h=w*0.75;
-  if(h>H){h=H;w=h/4*3}
+  if(h>H){h=H;w=h*4/3}
   frame.style.width=w+'px';frame.style.height=h+'px';
   frame.style.left=(W-w)/2+'px';frame.style.top=(H-h)/2+'px';
   const rc=$('#rain');rc.width=Math.round(w);rc.height=Math.round(h);
