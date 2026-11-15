@@ -2,11 +2,9 @@
 <html lang="sk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d0b14">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Kým sa zobudím / Until I Wake — beta</title>
+<title>Kým sa zobudím / Until I Wake — beta 3</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d0b14'/><circle cx='16' cy='16' r='7' fill='%23e8c37a'/></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -14,72 +12,48 @@ html,body{height:100%;overflow:hidden;background:#07060b;color:#f2ecdd;
   font-family:"Optima","Palatino Linotype",Palatino,Georgia,serif}
 #app{position:fixed;inset:0;display:flex;flex-direction:column;
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:26px;z-index:30;background:#07060b}
-.screen.on{display:flex}
-#hud{display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:13px;letter-spacing:.04em;
-  color:#b9aec9;flex:0 0 auto;z-index:20}
+#hud{display:flex;align-items:center;gap:10px;padding:7px 12px;font-size:12.5px;color:#b9aec9;flex:0 0 auto;z-index:20}
 #stageLbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #stageLbl b{color:#e8c37a;font-weight:600}
-.dots{display:flex;gap:6px}
-.dot{width:9px;height:9px;border-radius:50%;border:1px solid #6d6280;transition:.35s}
-.dot.on{background:#e8c37a;border-color:#e8c37a;box-shadow:0 0 10px #e8c37a99}
-.tbtn{background:none;border:1px solid #3a3348;color:#b9aec9;border-radius:7px;padding:5px 9px;
-  font:inherit;font-size:12px;cursor:pointer}
-.tbtn:active{background:#221d2e}
-#stage{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;
-  background:#07060b center/cover no-repeat;touch-action:none}
-#frame{position:absolute;transform-origin:50% 50%;will-change:transform}
-#bg,#bgc{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;
-  -webkit-user-drag:none;user-select:none}
-#bg{filter:brightness(.9) saturate(.85)}
-#bgc{opacity:0;transition:opacity 1.1s ease}
-#frame.solved #bgc{opacity:1}
-#frame.solved #bg{filter:brightness(1.03) saturate(1.08)}
-.hs{position:absolute;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
-  min-width:38px;min-height:38px;cursor:pointer}
-.hs.gone{pointer-events:none;animation:vanish .75s ease forwards}
-@keyframes vanish{0%{box-shadow:0 0 0 0 #fff0}35%{box-shadow:0 0 26px 6px #fff6}100%{box-shadow:0 0 0 0 #fff0;opacity:0}}
-.hs.hint{animation:hsHint 1.7s ease}
-@keyframes hsHint{0%,100%{box-shadow:0 0 0 0 #e8c37a00}50%{box-shadow:0 0 0 3px #e8c37abb,0 0 26px 8px #e8c37a55}}
-#torch{position:absolute;inset:0;pointer-events:none;z-index:6;--mx:50%;--my:50%;
-  background:radial-gradient(circle 240px at var(--mx) var(--my),#0000 0 42%,#07060bd9 100%)}
-#frame.wobble{animation:wob .5s ease}
-@keyframes wob{0%,100%{filter:none}25%{filter:blur(1.4px) brightness(.75)}60%{filter:blur(.6px) brightness(.9)}}
-#rain{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;opacity:.5}
-#bar{flex:0 0 auto;padding:6px 12px 10px;z-index:20}
-#whisper{min-height:38px;font-size:14px;line-height:1.35;font-style:italic;color:#cfc3dd;
-  opacity:0;transition:opacity .5s;text-align:center}
+.tbtn{background:none;border:1px solid #3a3348;color:#b9aec9;border-radius:7px;padding:5px 9px;font:inherit;font-size:12px;cursor:pointer}
+#stage{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#scene{position:relative;overflow:hidden;background:#07060b;box-shadow:0 0 60px #0009}
+#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  -webkit-user-drag:none;user-select:none;pointer-events:none}
+#spots{position:absolute;inset:0}
+.hs{position:absolute;transform:translate(-50%,-50%);border-radius:50%;min-width:46px;min-height:46px;
+  aspect-ratio:1;cursor:pointer}
+.hs.ping{animation:ping .9s ease-out}
+@keyframes ping{0%{box-shadow:0 0 0 0 #ffe9b8aa}100%{box-shadow:0 0 0 46px #ffe9b800}}
+.hs.gone{pointer-events:none}
+#bar{flex:0 0 auto;padding:8px 14px 12px;min-height:74px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;text-align:center}
+#whisper{font-size:14px;line-height:1.35;font-style:italic;color:#cfc3dd;max-width:640px;
+  opacity:0;transition:opacity .45s}
 #whisper.on{opacity:1}
 #whisper b{color:#e8c37a;font-style:normal}
-#prow{display:flex;align-items:center;gap:10px;margin-top:4px}
-#ptrack{flex:1;height:3px;background:#241f31;border-radius:2px;overflow:hidden}
-#pfill{height:100%;width:40%;background:linear-gradient(90deg,#8f5a6a,#e8c37a);transition:width .6s}
-#pnum{font-size:11px;color:#8f859d;font-variant-numeric:tabular-nums;min-width:62px;text-align:right}
-#next{display:none;margin:10px auto 0;background:#e8c37a;color:#171320;border:0;border-radius:11px;
-  padding:13px 26px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:.02em}
-#next.on{display:block}
-#next:active{transform:translateY(1px)}
-#start{background:#07060b center/cover no-repeat}
-#start .veil{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#07060b33,#07060bf2 78%)}
+#hintBtn{display:none;background:none;border:1px solid #453b58;color:#a99bbd;border-radius:9px;
+  padding:7px 14px;font:inherit;font-size:12.5px;cursor:pointer}
+#hintBtn.on{display:inline-block}
+#portal{position:absolute;inset:0;pointer-events:none;z-index:15;
+  background-position:center;background-size:cover;
+  clip-path:circle(0px at 50% 50%);transition:clip-path .95s cubic-bezier(.22,.9,.3,1)}
+#portal.open{clip-path:circle(150% at 50% 50%)}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:26px;z-index:30;background:#07060b center/cover no-repeat}
+.screen.on{display:flex}
+#start .veil{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#07060b44,#07060bf0 80%)}
 #start .inner{position:relative;max-width:520px}
-h1{font-size:clamp(30px,7.5vw,46px);font-weight:400;line-height:1.1}
-h1 small{display:block;font-size:.44em;color:#a99bbd;letter-spacing:.22em;text-transform:uppercase;margin-top:12px}
+h1{font-size:clamp(30px,7.5vw,44px);font-weight:400;line-height:1.12}
+h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-transform:uppercase;margin-top:12px}
 #start p{color:#c3b7d4;font-size:14px;line-height:1.55;margin-top:18px}
-.big{margin-top:26px;background:#e8c37a;color:#171320;border:0;border-radius:12px;padding:15px 30px;
+.big{margin-top:24px;background:#e8c37a;color:#171320;border:0;border-radius:12px;padding:15px 30px;
   font:inherit;font-size:16px;font-weight:600;cursor:pointer}
-.big:active{transform:translateY(1px)}
-.ghost{margin-top:12px;background:none;border:1px solid #453b58;color:#c3b7d4;border-radius:12px;
+.ghost{margin-top:10px;background:none;border:1px solid #453b58;color:#c3b7d4;border-radius:12px;
   padding:12px 24px;font:inherit;font-size:14px;cursor:pointer}
-#endInner{max-width:560px}
-#endInner p{font-size:15px;line-height:1.6;color:#cfc3dd;margin-top:14px}
-.credits{font-size:11px;color:#7d7391;margin-top:26px;line-height:1.7}
-#fade{position:fixed;inset:0;background:#07060b;opacity:0;pointer-events:none;z-index:40;transition:opacity 1.4s}
-#fade.on{opacity:1}
-#fadeMsg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
-  padding:30px;z-index:41;opacity:0;pointer-events:none;transition:opacity 1.2s;color:#d9cfe6}
-#fadeMsg.on{opacity:1}
-#fadeMsg div{max-width:460px;font-size:15px;line-height:1.6;font-style:italic}
+#endInner{max-width:560px;background:#f6efdfee;border-radius:16px;padding:26px 18px;color:#171320}
+#endInner p{font-size:15px;line-height:1.6;margin-top:14px}
+.credits{font-size:11px;margin-top:24px;line-height:1.7}
 </style>
 </head>
 <body>
@@ -87,35 +61,26 @@ h1 small{display:block;font-size:.44em;color:#a99bbd;letter-spacing:.22em;text-t
 <div id="app">
   <div id="hud">
     <div id="stageLbl"></div>
-    <div class="dots" id="dots"></div>
     <button class="tbtn" id="bSnd">🔊</button>
     <button class="tbtn" id="bLang">EN</button>
   </div>
-
   <div id="stage">
-    <div id="frame">
+    <div id="scene">
       <img id="bg" alt="">
-      <img id="bgc" alt="">
-      <canvas id="rain"></canvas>
       <div id="spots"></div>
+      <div id="portal"></div>
     </div>
-    <div id="torch"></div>
   </div>
-
   <div id="bar">
     <div id="whisper"></div>
-    <div id="prow">
-      <div id="ptrack"><div id="pfill"></div></div>
-      <div id="pnum">60 bpm</div>
-    </div>
-    <button id="next"></button>
+    <button id="hintBtn"></button>
   </div>
 </div>
 
 <div id="start" class="screen on">
   <div class="veil"></div>
   <div class="inner">
-    <h1><span id="tTitle">Kým sa zobudím</span><small id="tSeries">Snílkovia · Príbeh I</small></h1>
+    <h1><span id="tTitle"></span><small id="tSeries"></small></h1>
     <p id="tIntro"></p>
     <button class="big" id="bStart"></button>
     <button class="ghost" id="bCont"></button>
@@ -123,147 +88,89 @@ h1 small{display:block;font-size:.44em;color:#a99bbd;letter-spacing:.22em;text-t
 </div>
 
 <div id="end" class="screen"><div id="endInner"></div></div>
-<div id="fade"></div>
-<div id="fadeMsg"><div></div></div>
 
 <script>
 /* =====================================================================
-   Kým sa zobudím — beta 2: svetlo, tri cudzie veci, pulz
+   Kým sa zobudím — beta 3
+   Jedna vec v každej spomienke. Klik na ňu otvorí okno do ďalšej etapy.
+   Žiadna tma, žiadna lampa, žiadne čierne obrazovky.
    ===================================================================== */
 
-const D={
- stages:[
-  {img:'assets/s01.webp',clean:'assets/s01_clean.webp',
-   t:{sk:'Kolíska',en:'The Cradle'},
-   in:{sk:'Niekto spieva. Niečo mäkké ma stráži z police.',en:'Someone is singing. Something soft is guarding me from the shelf.'},
-   out:{sk:'Mama spievala, kým som nezaspala. Môj macko ma strážil z police.',en:'Mom sang until I fell asleep. My teddy watched over me from the shelf.'},
-   hs:[
-    {x:14.5,y:31,r:5.2,n:{sk:'Bezdrôtová kamera',en:'Wireless camera'},w:{sk:'V tom roku ešte neexistovala. Niekto ju sem dal, aby ťa strážil.',en:'It did not exist that year. Someone put it here to watch over you.'}},
-    {x:52.7,y:24,r:6.4,n:{sk:'Moderná zvonkohra',en:'A modern mobile'},w:{sk:'Nad kolískou visí zvonkohra z budúcnosti — a predsa sa hojdá v takte uspávanky.',en:'A mobile from the future hangs above the crib — yet it swings in time with the lullaby.'}},
-    {x:96,y:30,r:6.4,n:{sk:'Dve svetlá na oblohe',en:'Two lights in the sky'},w:{sk:'Mesiac aj slnko naraz. Sen si nedrží pravidlá.',en:'Moon and sun at once. A dream does not keep the rules.'}}
-   ]},
-  {img:'assets/s02.webp',clean:'assets/s02_clean.webp',
-   t:{sk:'Škôlka',en:'Kindergarten'},
-   in:{sk:'Svet bol prázdny papier a ja som chcela všetky farby.',en:'The world was a blank sheet and I wanted every colour.'},
-   out:{sk:'Do každého obrázka som kreslila slnko. Aj do tých nočných.',en:'I drew a sun into every picture. Even the night ones.'},
-   hs:[
-    {x:34.5,y:72.5,r:5.4,n:{sk:'Tablet',en:'A tablet'},w:{sk:'Deti kreslili na papier. Toto prišlo až oveľa neskôr.',en:'Children drew on paper. This arrived much later.'}},
-    {x:20.2,y:34,r:4.2,n:{sk:'Dezinfekcia',en:'Hand sanitizer'},w:{sk:'Ruka, ktorá ju tam položila, bola v bielom plášti.',en:'The hand that left it there wore a white coat.'}},
-    {x:80.2,y:41.7,r:5.2,n:{sk:'Lekárnička so stetoskopom',en:'First-aid case and stethoscope'},w:{sk:'V polici s hračkami niekto nechal izbu 214.',en:'Someone left room 214 in the toy shelf.'}}
-   ]},
-  {img:'assets/s03.webp',clean:'assets/s03_clean.webp',
-   t:{sk:'Prvý deň v škole',en:'First Day of School'},
-   in:{sk:'Mama ma pri dverách pustila za ruku. Bola som taká malá.',en:'Mum let go of my hand at the door. I was so small.'},
-   out:{sk:'Zavesila som tašku na háčik a zostala. Bola som statočná.',en:'I hung my bag on the hook and stayed. I was brave.'},
-   hs:[
-    {x:48,y:91,r:5.6,n:{sk:'Nemocničný návlek',en:'Hospital shoe cover'},w:{sk:'Medzi detskými topánkami jedna prišla z izby 214.',en:'Among the children’s shoes, one came from room 214.'}},
-    {x:17.2,y:37.6,r:3.8,n:{sk:'Návštevný odznak',en:'Visitor badge'},w:{sk:'Menovka z nemocnice na vešiaku v škole.',en:'A hospital name badge on a school coat hook.'}},
-    {x:67.5,y:92,r:6,n:{sk:'Plastové nazúvačky',en:'Plastic clogs'},w:{sk:'Medzi koženými topánkami jedno dieťa z inej doby.',en:'Among the leather shoes, one child from another time.'}}
-   ]},
-  {img:'assets/s04.webp',clean:'assets/s04_clean.webp',
-   t:{sk:'Dospievanie',en:'Growing Up'},
-   in:{sk:'Niektoré noci som si zapisovala, čo som nevedela povedať nahlas, a skryla to pod malý zámok.',en:'Some nights I wrote down what I could not say aloud, and hid it under a small lock.'},
-   out:{sk:'Moje tajomstvá mali malý zámok. Moje srdce nie.',en:'My secrets had a small lock. My heart did not.'},
-   hs:[
-    {x:12.2,y:75,r:5,n:{sk:'Smartfón',en:'A smartphone'},w:{sk:'Denník mal zámok. Toto nemá.',en:'The diary had a lock. This has none.'}},
-    {x:68.5,y:44,r:4.2,n:{sk:'Bezdrôtové slúchadlá',en:'Wireless earbuds'},w:{sk:'Hudba bez kábla, v izbe, kde ešte nebolo ani CD.',en:'Music without a wire, in a room that did not even have CDs yet.'}},
-    {x:42,y:89,r:7.5,n:{sk:'Cudzie kovové zábradlie',en:'The wrong metal rail'},w:{sk:'Jej posteľ bola vždy teplá. Toto je iná posteľ.',en:'Her bed was always warm. This is a different bed.'}}
-   ]},
-  {img:'assets/s05.webp',clean:'assets/s05_clean.webp',
-   t:{sk:'Prvá láska',en:'First Love'},
-   in:{sk:'Meškal. Nikdy nevedel povedať, čo cíti, vedel to len napísať.',en:'He was late. He never could say what he felt — only write it.'},
-   out:{sk:'Napísal, čo sa nikdy neodvážil povedať. Ten list som si nechala dvadsať rokov.',en:'He wrote what he never dared to say. I kept that letter for twenty years.'},
-   hs:[
-    {x:28.4,y:66.8,r:3.6,n:{sk:'Smart hodinky',en:'A smartwatch'},w:{sk:'List mal dvadsať rokov. Toto má displej.',en:'The letter lasted twenty years. This has a screen.'}},
-    {x:51.1,y:59,r:4.2,n:{sk:'Kelímok s viečkom',en:'A cup with a plastic lid'},w:{sk:'Káva z plastu v parku, kde sa pije z porcelánu.',en:'Plastic coffee in a park where coffee comes in porcelain.'}},
-    {x:64.5,y:64.5,r:6.2,n:{sk:'Tulipány v októbri',en:'Tulips in October'},w:{sk:'Návštevy nosia kvety. Aj do nemocnice.',en:'Visitors bring flowers. Even to a hospital.'}}
-   ]},
-  {img:'assets/s06.webp',clean:'assets/s06_clean.webp',
-   t:{sk:'Odchod z domu',en:'Leaving Home'},
-   in:{sk:'Štyri prázdne steny. A dvere, ktoré odomykám len ja.',en:'Four empty walls. And a door only I unlock.'},
-   out:{sk:'Prvý kľúč, ktorý bol len môj. Bála som sa a tešila zároveň.',en:'The first key that was only mine. I was scared and glad at once.'},
-   hs:[
-    {x:89.1,y:82.6,r:6,n:{sk:'Smartfón s káblom',en:'Phone and cable'},w:{sk:'Prvý kľúč bol jej. Toto je kľúč do iného sveta.',en:'The first key was hers. This is a key to another world.'}},
-    {x:16.8,y:30.1,r:5,n:{sk:'Holá LED žiarovka',en:'A bare LED bulb'},w:{sk:'Svetlo na dom, ktorý ešte neexistuje.',en:'A light in a home that does not exist yet.'}},
-    {x:6.8,y:85.7,r:5,n:{sk:'Nemocničný list',en:'Hospital discharge letter'},w:{sk:'Papier, ktorý sa sem dostal z druhej strany.',en:'Paper that found its way here from the other side.'}}
-   ]},
-  {img:'assets/s07.webp',clean:'assets/s07_clean.webp',
-   t:{sk:'Stretnutie s Adamom',en:'Meeting Adam'},
-   in:{sk:'Daždivý utorok. Kaviareň. Vôňa čerstvej kávy. Cudzinec s láskavými očami.',en:'A rainy Tuesday. A café. Fresh coffee. A stranger with kind eyes.'},
-   out:{sk:'Vylial mi kávu a kúpil mi novú. Rozprávali sme sa, až kým nezatvorili.',en:'He spilled my coffee and bought me another. We talked until they closed.'},
-   hs:[
-    {x:22,y:87,r:6,n:{sk:'Predlžovačka',en:'Power strip'},w:{sk:'V kaviarni, kde sa káva nalieva ručne.',en:'In a café where coffee is poured by hand.'}},
-    {x:15.6,y:77.2,r:5,n:{sk:'Smartfón',en:'A smartphone'},w:{sk:'Prvý raz sa dotkli šálok. Toto ležalo medzi nimi.',en:'Their cups touched for the first time. This lay between them.'}},
-    {x:94.6,y:36,r:4.2,n:{sk:'Stojan s QR kódom',en:'QR stand'},w:{sk:'Návod, ktorý v tej dobe nikto nevedel prečítať.',en:'Instructions nobody could read back then.'}}
-   ]},
-  {img:'assets/s08.webp',clean:'assets/s08_clean.webp',
-   t:{sk:'Svadba',en:'The Wedding'},
-   in:{sk:'Všetci, ktorých som ľúbila, v jednej záhrade.',en:'Everyone I loved, in one garden.'},
-   out:{sk:'„Navždy,“ povedal. Verila som mu. Stále verím.',en:'“Forever,” he said. I believed him. I still do.'},
-   hs:[
-    {x:32.5,y:73,r:5,n:{sk:'Niekto v modrom',en:'Someone in blue'},w:{sk:'Prišla z izby 214. Ako hosť.',en:'She came from room 214. As a guest.'}},
-    {x:27,y:82,r:6,n:{sk:'Plastová stolička',en:'A plastic chair'},w:{sk:'Medzi drevenými stoličkami jedna z neskôr.',en:'Among the wooden chairs, one from later.'}},
-    {x:71.1,y:36.6,r:3.6,n:{sk:'Mikrofón',en:'A microphone'},w:{sk:'Sľub, ktorý sa nahrával, aby ho bolo počuť.',en:'A vow recorded so it could be heard.'}}
-   ]},
-  {img:'assets/s09.webp',clean:'assets/s09_clean.webp',
-   t:{sk:'Ema a Tomi',en:'Ema and Tom'},
-   in:{sk:'Dva malé hlásky. Lepkavé ruky. Domov.',en:'Two small voices. Sticky hands. Home.'},
-   out:{sk:'Ema nás nakreslila, ako sa držíme za ruky. „Aby sa nikto nestratil,“ povedala.',en:'Ema drew us holding hands. “So nobody gets lost,” she said.'},
-   hs:[
-    {x:89.3,y:10.6,r:7.5,n:{sk:'Televízor',en:'A television'},w:{sk:'V kuchyni, kde sa večer rozprávalo.',en:'In a kitchen where evenings were for talking.'}},
-    {x:94,y:75.1,r:5,n:{sk:'Tablet',en:'A tablet'},w:{sk:'Deti kreslili na papier. Toto prišlo neskôr.',en:'The children drew on paper. This came later.'}},
-    {x:52,y:62,r:5,n:{sk:'Port na ruke',en:'A port on her arm'},w:{sk:'Tu začína cesta späť.',en:'The way back starts here.'}}
-   ]},
-  {img:'assets/s10.webp',clean:'assets/s10_clean.webp',rain:true,
-   t:{sk:'Dážď',en:'The Rain'},
-   in:{sk:'Len trochu dažďa. Skoro doma.',en:'Only a little rain. Almost home.'},
-   out:{sk:'Svetlá. Zvuk, akoby sa trhalo celé nebo. A potom—',en:'Lights. A sound like the sky tearing. And then—'},
-   hs:[
-    {x:77.6,y:60.3,r:6,n:{sk:'Infúzna stojka',en:'An IV stand'},w:{sk:'Stojí v daždi a čaká na ňu.',en:'It stands in the rain, waiting for her.'}},
-    {x:56,y:20,r:5,n:{sk:'Iná lampa',en:'The wrong lamp'},w:{sk:'Jedna z lámp je z inej doby.',en:'One of the lamps is from another time.'}},
-    {x:7,y:84.5,r:4.4,n:{sk:'Nemocničný náramok',en:'Hospital wristband'},w:{sk:'Jej meno, na mokrej zemi.',en:'Her name, on the wet ground.'}}
-   ]}
- ],
- final:{img:'assets/s11.webp'}
-};
+const D={stages:[
+ {img:'assets/s01.webp',t:{sk:'Kolíska',en:'The Cradle'},
+  in:{sk:'Niekto spieva. Niečo mäkké ma stráži z police.',en:'Someone is singing. Something soft is guarding me from the shelf.'},
+  out:{sk:'Mama spievala, kým som nezaspala. Môj macko ma strážil z police.',en:'Mom sang until I fell asleep. My teddy watched over me from the shelf.'},
+  h:{x:96,y:30,r:7,n:{sk:'Dve svetlá na oblohe',en:'Two lights in the sky'},w:{sk:'Mesiac aj slnko naraz. Sen si nedrží pravidlá.',en:'Moon and sun at once. A dream does not keep the rules.'}}},
+ {img:'assets/s02.webp',t:{sk:'Škôlka',en:'Kindergarten'},
+  in:{sk:'Svet bol prázdny papier a ja som chcela všetky farby.',en:'The world was a blank sheet and I wanted every colour.'},
+  out:{sk:'Do každého obrázka som kreslila slnko. Aj do tých nočných.',en:'I drew a sun into every picture. Even the night ones.'},
+  h:{x:77.8,y:32,r:7,n:{sk:'Monitor na stene',en:'The monitor on the wall'},w:{sk:'V škôlke niekto nechal pípať izbu 214.',en:'Someone left room 214 beeping in a kindergarten.'}}},
+ {img:'assets/s03.webp',t:{sk:'Prvý deň v škole',en:'First Day of School'},
+  in:{sk:'Mama ma pri dverách pustila za ruku. Bola som taká malá.',en:'Mum let go of my hand at the door. I was so small.'},
+  out:{sk:'Zavesila som tašku na háčik a zostala. Bola som statočná.',en:'I hung my bag on the hook and stayed. I was brave.'},
+  h:{x:67.5,y:92,r:8,n:{sk:'Plastové nazúvačky',en:'Plastic clogs'},w:{sk:'Medzi koženými topánkami jedno dieťa z inej doby.',en:'Among the leather shoes, one child from another time.'}}},
+ {img:'assets/s04.webp',t:{sk:'Dospievanie',en:'Growing Up'},
+  in:{sk:'Niektoré noci som si zapisovala, čo som nevedela povedať nahlas.',en:'Some nights I wrote down what I could not say aloud.'},
+  out:{sk:'Moje tajomstvá mali malý zámok. Moje srdce nie.',en:'My secrets had a small lock. My heart did not.'},
+  h:{x:42,y:89,r:9,n:{sk:'Cudzie kovové zábradlie',en:'The wrong metal rail'},w:{sk:'Jej posteľ bola vždy teplá. Toto je iná posteľ.',en:'Her bed was always warm. This is a different bed.'}}},
+ {img:'assets/s05.webp',t:{sk:'Prvá láska',en:'First Love'},
+  in:{sk:'Meškal. Nikdy nevedel povedať, čo cíti, vedel to len napísať.',en:'He was late. He never could say what he felt — only write it.'},
+  out:{sk:'Napísal, čo sa nikdy neodvážil povedať. Ten list som si nechala dvadsať rokov.',en:'He wrote what he never dared to say. I kept that letter for twenty years.'},
+  h:{x:64.5,y:64,r:7,n:{sk:'Tulipány v októbri',en:'Tulips in October'},w:{sk:'Návštevy nosia kvety. Aj do nemocnice.',en:'Visitors bring flowers. Even to a hospital.'}}},
+ {img:'assets/s06.webp',t:{sk:'Odchod z domu',en:'Leaving Home'},
+  in:{sk:'Štyri prázdne steny. A dvere, ktoré odomykám len ja.',en:'Four empty walls. And a door only I unlock.'},
+  out:{sk:'Prvý kľúč, ktorý bol len môj. Bála som sa a tešila zároveň.',en:'The first key that was only mine. I was scared and glad at once.'},
+  h:{x:62,y:27,r:9,n:{sk:'Studené svetlo zhora',en:'Cold light from above'},w:{sk:'Na dom je to svetlo príliš nemocničné.',en:'That light is too much like a hospital for a home.'}}},
+ {img:'assets/s07.webp',t:{sk:'Stretnutie s Adamom',en:'Meeting Adam'},
+  in:{sk:'Daždivý utorok. Kaviareň. Cudzinec s láskavými očami.',en:'A rainy Tuesday. A café. A stranger with kind eyes.'},
+  out:{sk:'Vylial mi kávu a kúpil mi novú. Rozprávali sme sa, až kým nezatvorili.',en:'He spilled my coffee and bought me another. We talked until they closed.'},
+  h:{x:22,y:87,r:7,n:{sk:'Predlžovačka',en:'Power strip'},w:{sk:'V kaviarni, kde sa káva nalieva ručne.',en:'In a café where coffee is poured by hand.'}}},
+ {img:'assets/s08.webp',t:{sk:'Svadba',en:'The Wedding'},
+  in:{sk:'Všetci, ktorých som ľúbila, v jednej záhrade.',en:'Everyone I loved, in one garden.'},
+  out:{sk:'„Navždy,“ povedal. Verila som mu. Stále verím.',en:'“Forever,” he said. I believed him. I still do.'},
+  h:{x:32.5,y:73,r:8,n:{sk:'Niekto v modrom',en:'Someone in blue'},w:{sk:'Prišla z izby 214. Ako hosť.',en:'She came from room 214. As a guest.'}}},
+ {img:'assets/s09.webp',t:{sk:'Ema a Tomi',en:'Ema and Tom'},
+  in:{sk:'Dva malé hlásky. Lepkavé ruky. Domov.',en:'Two small voices. Sticky hands. Home.'},
+  out:{sk:'Ema nás nakreslila, ako sa držíme za ruky. „Aby sa nikto nestratil,“ povedala.',en:'Ema drew us holding hands. “So nobody gets lost,” she said.'},
+  h:{x:95,y:35,r:8,n:{sk:'Hadička z kúta',en:'A tube from the corner'},w:{sk:'Z kúta vedie hadička až k jej ruke.',en:'A tube runs from the corner to her hand.'}}},
+ {img:'assets/s10.webp',t:{sk:'Dážď',en:'The Rain'},
+  in:{sk:'Len trochu dažďa. Skoro doma.',en:'Only a little rain. Almost home.'},
+  out:{sk:'Svetlá. Zvuk, akoby sa trhalo celé nebo. A potom—',en:'Lights. A sound like the sky tearing. And then—'},
+  h:{x:80,y:65,r:9,n:{sk:'Posteľ v daždi',en:'A bed in the rain'},w:{sk:'Na ulici stojí niečo, čo patrí do izby 214.',en:'Something that belongs to room 214 is standing in the street.'}}}
+]};
 
 const T={
  en:{series:'Dreamers · Story I',title:'Until I Wake',
-  intro:'Rain. Headlights. Then silence. Elena has been in a coma for eleven days. Somewhere deep inside she is still dreaming, walking back through every stage of her life. Three things in each memory do not belong. Find them — and find her way home.',
-  start:'Begin the dream',cont:'Continue',stage:'Stage',
-  miss:['That belongs here.','No — that is hers.','Not that one.'],
-  next:'Next stage ›',wake:'Open your eyes',again:'Play again',
-  fin:'Final Stage',finT:'Waking Up',
-  v1:'“…her pulse is rising…”',v2:'“Mommy? It is Ema. I brought your teddy.”',v3:'“Elena… we are all here. Come back to us.”',
+  intro:'Rain. Headlights. Then silence. Elena has been in a coma for eleven days. Somewhere deep inside she is still dreaming, walking back through every stage of her life. In each memory one thing does not belong. Tap it — and the dream opens.',
+  start:'Begin the dream',cont:'Continue',stage:'Stage',hint:'Hint',
+  hintTxt:'Look closer. Something here is out of place.',
+  again:'Play again',finT:'Waking Up',
   last:'I am awake. You are all here. Every stage of my life was leading me back to you.',
-  credits:'The End',ep:'Elena, 38. Wife of Adam. Mother of Ema and Tom. Her body sleeps in room 214. Her mind is still walking home.',
-  credits2:'Human: concept, story, Elena’s character, game direction. Made with AI assistance.'},
+  ep:'Elena, 38. Wife of Adam. Mother of Ema and Tom. Her body sleeps in room 214. Her mind is still walking home.',
+  credits:'The End',credits2:'Human: concept, story, Elena’s character, game direction. Made with AI assistance.',
+  miss:['That belongs here.','Not that one.','Keep looking.']},
  sk:{series:'Snílkovia · Príbeh I',title:'Kým sa zobudím',
-  intro:'Dážď. Svetlá áut. Potom ticho. Elena je už jedenásť dní v kóme. Niekde hlboko vo vnútri stále sníva a prechádza späť každou etapou svojho života. V každej spomienke sú tri veci, ktoré tam nepatria. Nájdi ich — a nájdi pre ňu cestu domov.',
-  start:'Začať sen',cont:'Pokračovať',stage:'Etapa',
-  miss:['To sem patrí.','Nie — to je jej.','Toto nie.'],
-  next:'Ďalšia etapa ›',wake:'Otvor oči',again:'Hrať znova',
-  fin:'Posledná etapa',finT:'Prebudenie',
-  v1:'„…pulz jej stúpa…“',v2:'„Mami? To som ja, Ema. Priniesla som ti macka.“',v3:'„Elena… sme tu všetci. Vráť sa k nám.“',
+  intro:'Dážď. Svetlá áut. Potom ticho. Elena je už jedenásť dní v kóme. Niekde hlboko vo vnútri stále sníva a prechádza späť každou etapou svojho života. V každej spomienke je jedna vec, ktorá tam nepatrí. Ťukni na ňu — a sen sa otvorí.',
+  start:'Začať sen',cont:'Pokračovať',stage:'Etapa',hint:'Nápoveda',
+  hintTxt:'Pozri sa bližšie. Niečo tu nepatrí.',
+  again:'Hrať znova',finT:'Prebudenie',
   last:'Som hore. Ste tu všetci. Každá etapa môjho života ma viedla späť k vám.',
-  credits:'Koniec',ep:'Elena, 38 rokov. Manželka Adama. Mama Emy a Tomiho. Jej telo spí v izbe 214. Jej myseľ ešte kráča domov.',
-  credits2:'Človek: nápad, príbeh, postava Eleny, smerovanie hry. Vytvorené s pomocou AI.'}
+  ep:'Elena, 38 rokov. Manželka Adama. Mama Emy a Tomiho. Jej telo spí v izbe 214. Jej myseľ ešte kráča domov.',
+  credits:'Koniec',credits2:'Človek: nápad, príbeh, postava Eleny, smerovanie hry. Vytvorené s pomocou AI.',
+  miss:['To sem patrí.','Toto nie.','Hľadaj ďalej.']}
 };
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}},
-           set(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}};
+          set(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}};
 const $=s=>document.querySelector(s);
 let L=(LS.get('uiw_lang','')||((navigator.language||'').toLowerCase().startsWith('sk')||(navigator.language||'').toLowerCase().startsWith('cs')?'sk':'en'));
 const t=k=>T[L][k];
 
-/* ---------------- AUDIO ---------------- */
-let ac=null,master=null,muted=LS.get('uiw_mute','0')==='1',pad=null,rainNode=null,hbTO=null;
-const HEART=[0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0];
-let hbIdx=0,pulse=60;
+/* ---------- zvuk ---------- */
+let ac=null,master=null,muted=LS.get('uiw_mute','0')==='1';
 function initAudio(){
   if(ac){ac.resume&&ac.resume();return}
   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
   ac=new AC();master=ac.createGain();master.gain.value=muted?0:1;master.connect(ac.destination);
-  heartbeat();
 }
 function tone(f,dur,vol,type='sine',when=0){
   if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+when;
@@ -271,264 +178,119 @@ function tone(f,dur,vol,type='sine',when=0){
   g.gain.linearRampToValueAtTime(vol,t0+.015);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
   o.connect(g).connect(master);o.start(t0);o.stop(t0+dur+.05);
 }
-function heartbeat(){
-  clearTimeout(hbTO);
-  if(ac){const step=HEART[hbIdx%HEART.length];
-    if(step){tone(52,.16,.05,'sine');tone(40,.12,.03,'sine',.16)}}
-  hbIdx++;
-  hbTO=setTimeout(heartbeat,Math.max(140,(60000/pulse)/8));
-}
-function noiseBuf(){const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0);
-  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
-function setRain(on,vol=.1){
-  if(!ac)return;
-  if(on&&!rainNode){const s=ac.createBufferSource();s.buffer=noiseBuf();s.loop=true;
-    const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;f.Q.value=.6;
-    const g=ac.createGain();g.gain.value=0;s.connect(f).connect(g).connect(master);s.start();
-    g.gain.setTargetAtTime(vol,ac.currentTime,1);rainNode={s,g}}
-  else if(!on&&rainNode){const r=rainNode;r.g.gain.setTargetAtTime(0,ac.currentTime,.3);
-    setTimeout(()=>r.s.stop(),2000);rainNode=null}
-}
-function setPad(i){
-  if(!ac)return;
-  const roots=[[261.6,329.6,392],[261.6,329.6,392],[293.7,370,440],[293.7,349.2,440],[246.9,311.1,370],
-               [220,261.6,329.6],[220,261.6,329.6],[196,233.1,293.7],[174.6,207.7,261.6],[164.8,196,246.9]];
-  const ch=roots[Math.min(i,roots.length-1)];
-  if(pad){const old=pad;old.g.gain.setTargetAtTime(0,ac.currentTime,.8);setTimeout(()=>old.o.forEach(o=>o.stop()),4000)}
-  const g=ac.createGain();g.gain.value=0;const lp=ac.createBiquadFilter();
-  lp.type='lowpass';lp.frequency.value=900-i*50;g.connect(lp).connect(master);
-  const os=ch.map((f,k)=>{const o=ac.createOscillator();o.type='triangle';o.frequency.value=f/2;
-    o.detune.value=(k-1)*6;o.connect(g);o.start();return o});
-  g.gain.setTargetAtTime(.022,ac.currentTime,1.6);pad={o:os,g};
-}
 function sfx(k){
   if(!ac)return;
-  if(k==='good'){tone(784,.6,.1,'sine');tone(1175,.9,.07,'sine',.12)}
-  if(k==='bad'){tone(140,.24,.1,'sine');tone(110,.3,.07,'sine',.05)}
-  if(k==='vanish'){for(let i=0;i<6;i++)tone(880+i*160,.5,.035,'sine',i*.05)}
-  if(k==='solve'){[523,659,784,1047].forEach((f,i)=>tone(f,1.5,.06,'sine',i*.18))}
+  if(k==='good'){tone(784,.5,.09);tone(1175,.8,.06,'sine',.1)}
+  if(k==='bad'){tone(150,.2,.06)}
+  if(k==='open'){[523,659,784,1047].forEach((f,i)=>tone(f,1.4,.055,'sine',i*.16))}
 }
 function updSnd(){$('#bSnd').textContent=muted?'🔈':'🔊'}
 $('#bSnd').onclick=()=>{muted=!muted;LS.set('uiw_mute',muted?'1':'0');initAudio();
   if(master)master.gain.setTargetAtTime(muted?0:1,ac.currentTime,.05);updSnd()};
 updSnd();
 
-/* ---------------- STATE ---------------- */
-let cur=0,found=0,misses=0,idleTO=null,solved=false,busy=false,started=false;
-const spots=$('#spots'),frame=$('#frame'),stage=$('#stage');
+/* ---------- stav ---------- */
+let cur=0,locked=false,started=false,hintShown=false;
+const scene=$('#scene'),spots=$('#spots'),portal=$('#portal');
 
-/* ---------------- LAYOUT ---------------- */
 function layout(){
-  const W=stage.clientWidth,H=stage.clientHeight;
+  const W=$('#stage').clientWidth,H=$('#stage').clientHeight;
   let w=W,h=w*0.75;
   if(h>H){h=H;w=h*4/3}
-  frame.style.width=w+'px';frame.style.height=h+'px';
-  frame.style.left=(W-w)/2+'px';frame.style.top=(H-h)/2+'px';
-  const rc=$('#rain');rc.width=Math.round(w);rc.height=Math.round(h);
+  scene.style.width=w+'px';scene.style.height=h+'px';
 }
 addEventListener('resize',layout);
-addEventListener('orientationchange',()=>setTimeout(layout,250));
+addEventListener('orientationchange',()=>setTimeout(layout,220));
 
-/* ---------------- ZOOM / PAN ---------------- */
-let zs=1,ztx=0,zty=0;
-const ptrs=new Map();
-let downT=0,lastTap=0;
-function applyZoom(){
-  zs=Math.min(3,Math.max(1,zs));
-  if(zs===1){ztx=0;zty=0}
-  frame.style.transform=`translate(${ztx}px,${zty}px) scale(${zs})`;
-}
-stage.addEventListener('pointerdown',e=>{
-  initAudio();
-  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  downT=Date.now();stage.dataset.moved='0';
-});
-stage.addEventListener('pointermove',e=>{
-  if(!ptrs.has(e.pointerId))return;
-  const p=ptrs.get(e.pointerId),dx=e.clientX-p.x,dy=e.clientY-p.y;
-  if(Math.hypot(dx,dy)>3)stage.dataset.moved='1';
-  if(ptrs.size===2){
-    const [a,b]=[...ptrs.values()];
-    const before=Math.hypot(a.x-b.x,a.y-b.y);
-    p.x=e.clientX;p.y=e.clientY;
-    const [c,d]=[...ptrs.values()];
-    const after=Math.hypot(c.x-d.x,c.y-d.y);
-    if(before>0&&after>0){zs*=after/before;applyZoom()}
-    return;
-  }
-  p.x=e.clientX;p.y=e.clientY;
-  if(zs>1){ztx+=dx;zty+=dy;applyZoom()}
-});
-function endPtr(e){
-  const wasDrag=stage.dataset.moved==='1';
-  ptrs.delete(e.pointerId);
-  if(wasDrag||ptrs.size>0)return;
-  const now=Date.now();
-  if(e.pointerType!=='mouse'&&now-lastTap<320&&now-downT<320){
-    zs=zs>1?1:2.2;ztx=0;zty=0;applyZoom();lastTap=0;return;
-  }
-  lastTap=now;
-  tapAt(e.clientX,e.clientY);
-}
-stage.addEventListener('pointerup',endPtr);
-stage.addEventListener('pointercancel',e=>ptrs.delete(e.pointerId));
-stage.addEventListener('wheel',e=>{e.preventDefault();zs*=e.deltaY<0?1.15:1/1.15;applyZoom()},{passive:false});
-
-/* ---------------- TORCH ---------------- */
-function moveTorch(x,y){
-  const r=stage.getBoundingClientRect();
-  $('#torch').style.setProperty('--mx',(x-r.left)+'px');
-  $('#torch').style.setProperty('--my',(y-r.top)+'px');
-}
-stage.addEventListener('pointermove',e=>moveTorch(e.clientX,e.clientY-14));
-stage.addEventListener('pointerdown',e=>moveTorch(e.clientX,e.clientY-14));
-
-/* ---------------- STAGE ---------------- */
-function setPulse(v){
-  pulse=Math.min(140,Math.max(45,v));
-  const pct=Math.min(100,((pulse-45)/(140-45))*100);
-  $('#pfill').style.width=Math.max(6,pct)+'%';
-  $('#pnum').textContent=Math.round(pulse)+' bpm';
-}
 function whisper(html){
   const w=$('#whisper');
-  w.innerHTML=html;w.classList.add('on');
-  clearTimeout(w._to);w._to=setTimeout(()=>w.classList.remove('on'),7000);
+  w.innerHTML=html||'';w.classList.toggle('on',!!html);
 }
-function dots(){
-  const d=$('#dots');d.innerHTML='';
-  for(let i=0;i<3;i++){const s=document.createElement('div');
-    s.className='dot'+(i<found?' on':'');d.appendChild(s)}
+function label(){
+  const s=D.stages[cur];
+  $('#stageLbl').innerHTML=`<b>${t('stage')} ${cur+1}/${D.stages.length}</b> · ${s.t[L]}`;
 }
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+
 function buildStage(i){
-  cur=i;found=0;misses=0;busy=false;solved=false;
+  cur=i;locked=false;hintShown=false;
   const s=D.stages[i];
-  frame.classList.remove('solved','wobble');
-  $('#bg').src=s.img;$('#bgc').src=s.clean;
-  $('#bgc').style.transition='none';$('#bgc').style.opacity=0;void $('#bgc').offsetWidth;
-  $('#bgc').style.transition='';
+  $('#bg').src=s.img;
   spots.innerHTML='';
-  s.hs.forEach((h,k)=>{
-    const d=document.createElement('div');
-    d.className='hs';d.dataset.i=k;
-    d.style.left=h.x+'%';d.style.top=h.y+'%';d.style.width=(h.r*2)+'%';
-    spots.appendChild(d);
-  });
-  dots();
-  $('#stageLbl').innerHTML=`<b>${t('stage')} ${i+1}/${D.stages.length}</b> · ${s.t[L]}`;
-  $('#next').classList.remove('on');
-  setPulse(60);
+  const d=document.createElement('div');
+  d.className='hs';
+  d.style.left=s.h.x+'%';d.style.top=s.h.y+'%';d.style.width=(s.h.r*2)+'%';
+  spots.appendChild(d);
+  label();layout();
   whisper(s.in[L]);
-  setRain(!!s.rain);setPad(i);
-  zs=1;ztx=0;zty=0;applyZoom();
-  layout();armIdle();
-  LS.set('uiw2_stage',i);
+  $('#hintBtn').textContent=t('hint');
+  $('#hintBtn').classList.add('on');
+  portal.classList.remove('open');
+  portal.style.clipPath='circle(0px at 50% 50%)';
+  portal.style.backgroundImage='none';
+  LS.set('uiw3_stage',i);
 }
-function armIdle(){
-  clearTimeout(idleTO);
-  idleTO=setTimeout(()=>{if(!solved&&found<3)hint()},42000);
-}
-function hint(){
-  if(solved)return;
-  const left=[...spots.querySelectorAll('.hs:not(.gone)')];
-  if(!left.length)return;
-  const el=left[Math.floor(Math.random()*left.length)];
-  el.classList.add('hint');
-  setTimeout(()=>el.classList.remove('hint'),1800);
-  misses=0;
-}
-function tapAt(x,y){
-  if(busy||solved)return;
-  const el=document.elementFromPoint(x,y);
+
+/* ---------- klik ---------- */
+scene.addEventListener('pointerup',e=>{
+  if(locked)return;
+  initAudio();
+  const el=document.elementFromPoint(e.clientX,e.clientY);
   const h=el&&el.closest?el.closest('.hs'):null;
-  if(h&&!h.classList.contains('gone'))return foundHit(h);
+  if(h)return found(h,e);
   wrong();
-}
-function foundHit(el){
-  const h=D.stages[cur].hs[+el.dataset.i];
-  el.classList.add('gone');
-  found++;
-  sfx('vanish');sfx('good');
-  setPulse(pulse+8);
-  dots();
-  whisper(`<b>${h.n[L]}</b> — ${h.w[L]}`);
-  armIdle();
-  if(found>=3)solve();
+});
+function found(el,e){
+  locked=true;
+  const s=D.stages[cur],r=scene.getBoundingClientRect();
+  el.classList.add('gone','ping');
+  sfx('good');
+  whisper(`<b>${s.h.n[L]}</b> — ${s.h.w[L]}`);
+  const px=((e.clientX-r.left)/r.width)*100,py=((e.clientY-r.top)/r.height)*100;
+  const nextImg=(cur+1<D.stages.length)?D.stages[cur+1].img:'assets/s11.webp';
+  setTimeout(()=>{
+    portal.style.backgroundImage=`url('${nextImg}')`;
+    portal.style.backgroundPosition='center';
+    portal.style.clipPath=`circle(0px at ${px}% ${py}%)`;
+    void portal.offsetWidth;
+    portal.classList.add('open');
+    portal.style.clipPath=`circle(150% at ${px}% ${py}%)`;
+    sfx('open');
+  },650);
+  setTimeout(()=>{
+    if(cur+1<D.stages.length)buildStage(cur+1);
+    else finale();
+  },1750);
 }
 function wrong(){
-  if(solved)return;
-  misses++;
   sfx('bad');
-  setPulse(pulse+3);
-  frame.classList.remove('wobble');void frame.offsetWidth;frame.classList.add('wobble');
-  if(navigator.vibrate)try{navigator.vibrate(35)}catch(e){}
-  whisper(t('miss')[Math.min(2,Math.floor(misses/2))]);
-  setTimeout(()=>{if(!solved)setPulse(Math.max(60,pulse-3))},1200);
-  if(misses>=5)hint();
-  armIdle();
+  whisper(t('miss')[Math.floor(Math.random()*3)]);
+  setTimeout(()=>{if(!locked)whisper(D.stages[cur].in[L])},2600);
 }
-function solve(){
-  solved=true;busy=true;
-  const s=D.stages[cur];
-  clearTimeout(idleTO);
-  setTimeout(()=>{
-    frame.classList.add('solved');
-    setPulse(72);
-    sfx('solve');
-    whisper('<b>3/3</b> — '+s.out[L]);
-  },450);
-  setTimeout(()=>{
-    $('#next').textContent=t('next');
-    $('#next').classList.add('on');
-    busy=false;
-  },1500);
-}
-$('#next').onclick=()=>{
-  if(cur+1<D.stages.length)buildStage(cur+1);
-  else finishCard();
+$('#hintBtn').onclick=()=>{
+  if(hintShown||locked)return;
+  hintShown=true;
+  whisper(t('hintTxt'));
+  const hs=spots.querySelector('.hs');
+  if(hs){hs.classList.add('ping');setTimeout(()=>hs.classList.remove('ping'),1200)}
 };
 
-/* ---------------- FINISH ---------------- */
-function finishCard(){
-  $('#fadeMsg').innerHTML=`<div><div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a99bbd">${t('fin')}</div>
-    <h1 style="margin:10px 0 0">${t('finT')}</h1>
-    <button class="big" id="bWake" style="margin-top:24px">${t('wake')}</button></div>`;
-  $('#fade').classList.add('on');
-  $('#fadeMsg').classList.add('on');
-  $('#bWake').onclick=wake;
-}
-function wake(){
-  setRain(false);
-  const lines=[t('v1'),t('v2'),t('v3')];
-  const box=$('#fadeMsg');
-  box.innerHTML='<div id="vl"></div>';
-  const vl=$('#vl');
-  let k=0;
-  const step=()=>{
-    if(k<lines.length){
-      vl.textContent=lines[k];k++;box.classList.add('on');
-      setTimeout(()=>{box.classList.remove('on');
-        setTimeout(()=>{box.classList.add('on');step()},700)},1800);
-    }else{endScreen()}
-  };
-  step();
-}
-function endScreen(){
-  clearTimeout(idleTO);setRain(false);
-  $('#fade').classList.remove('on');
-  $('#fadeMsg').classList.remove('on');
-  $('#endInner').innerHTML=`
-    <h1>${t('title')}<small>${t('series')}</small></h1>
-    <p style="font-style:italic;color:#e8c37a">${t('last')}</p>
-    <p>${t('ep')}</p>
-    <p class="credits">${t('credits')}<br>${t('credits2')}</p>
-    <button class="big" id="bAgain">${t('again')}</button>`;
-  show('end');
-  $('#bAgain').onclick=()=>{LS.set('uiw2_stage',0);startGame(0)};
+/* ---------- koniec ---------- */
+function finale(){
+  setTimeout(()=>{
+    $('#endInner').innerHTML=`
+      <h1 style="color:#171320">${t('finT')}<small style="color:#5b5268">${t('title')} · ${t('series')}</small></h1>
+      <p style="font-style:italic;color:#2a2438;font-weight:600">${t('last')}</p>
+      <p style="color:#3a3348">${t('ep')}</p>
+      <p class="credits" style="color:#5b5268">${t('credits')}<br>${t('credits2')}</p>
+      <button class="big" id="bAgain">${t('again')}</button>`;
+    $('#end').style.backgroundImage="url('assets/s11.webp')";
+    show('end');
+    $('#bAgain').onclick=()=>{LS.set('uiw3_stage',0);startGame(0)};
+  },1000);
 }
 
-/* ---------------- START ---------------- */
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+/* ---------- štart ---------- */
 function applyLang(){
   document.documentElement.lang=L;
   $('#tTitle').textContent=t('title');
@@ -537,51 +299,27 @@ function applyLang(){
   $('#bStart').textContent=t('start');
   $('#bCont').textContent=t('cont');
   $('#bLang').textContent=L==='sk'?'EN':'SK';
-  const prog=parseInt(LS.get('uiw2_stage','0'),10)||0;
-  $('#bCont').style.display=(prog>0&&prog<D.stages.length)?'':'none';
   $('#start').style.backgroundImage="url('assets/title.webp')";
+  const prog=parseInt(LS.get('uiw3_stage','0'),10)||0;
+  $('#bCont').style.display=(prog>0&&prog<D.stages.length)?'':'none';
+  if(started)label();
 }
 $('#bLang').onclick=()=>{
   L=L==='sk'?'en':'sk';LS.set('uiw_lang',L);applyLang();
-  if(started){
-    $('#stageLbl').innerHTML=`<b>${t('stage')} ${cur+1}/${D.stages.length}</b> · ${D.stages[cur].t[L]}`;
-    if(!solved)whisper(D.stages[cur].in[L]);
-  }
+  if(started&&!locked)whisper(D.stages[cur].in[L]);
 };
 function startGame(from){
-  started=true;
+  started=true;initAudio();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
-  initAudio();
-  setTimeout(()=>buildStage(from),100);
+  setTimeout(()=>buildStage(from||0),80);
 }
 $('#bStart').onclick=()=>startGame(0);
 $('#bCont').onclick=()=>{
-  const prog=parseInt(LS.get('uiw2_stage','0'),10)||0;
+  const prog=parseInt(LS.get('uiw3_stage','0'),10)||0;
   startGame(Math.min(prog,D.stages.length-1));
 };
 
-/* ---------------- RAIN ---------------- */
-let drops=[];
-(function rainLoop(){
-  const c=$('#rain'),x=c.getContext('2d');
-  if(c.width){
-    x.clearRect(0,0,c.width,c.height);
-    x.strokeStyle='rgba(200,220,255,.35)';x.lineWidth=1.2;
-    if(drops.length!==90)drops=Array.from({length:90},()=>({x:Math.random()*c.width,y:Math.random()*c.height,
-      l:8+Math.random()*14,s:5+Math.random()*7}));
-    drops.forEach(d=>{
-      x.beginPath();x.moveTo(d.x,d.y);x.lineTo(d.x-1.6,d.y+d.l);x.stroke();
-      d.y+=d.s;d.x-=.5;if(d.y>c.height){d.y=-d.l;d.x=Math.random()*c.width}
-    });
-  }
-  requestAnimationFrame(rainLoop);
-})();
-
-/* ---------------- BOOT ---------------- */
-applyLang();
-layout();
-setTimeout(layout,80);
-setTimeout(layout,400);
+applyLang();layout();setTimeout(layout,120);setTimeout(layout,500);
 </script>
 </body>
 </html>
