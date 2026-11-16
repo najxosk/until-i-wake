@@ -2,6 +2,7 @@
 <html lang="sk">
 <head>
 <meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d0b14">
 <title>Kým sa zobudím / Until I Wake — beta 3</title>
@@ -54,18 +55,25 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
   font:inherit;font-size:16px;font-weight:600;cursor:pointer}
 .ghost{margin-top:10px;background:none;border:1px solid #453b58;color:#c3b7d4;border-radius:12px;
   padding:12px 24px;font:inherit;font-size:14px;cursor:pointer}
-#end{align-items:flex-start;justify-content:flex-end;padding:22px}
-#endInner{max-width:min(470px,94vw);background:rgba(10,9,16,.85);border-radius:18px;padding:22px 24px;
-  text-align:left;color:#f4eee4;backdrop-filter:blur(8px);box-shadow:0 20px 60px #000b}
-#endInner h1{color:#f8f3e9;font-size:clamp(20px,3vw,28px);margin:0;line-height:1.2}
-#endInner h1 small{display:block;margin-top:7px;font-size:11.5px;font-weight:600;letter-spacing:.07em;
-  text-transform:uppercase;color:#c6b9a2}
-#endInner p{font-size:14.5px;line-height:1.62;margin-top:12px;color:#ece5d9}
-#endInner p.last{font-style:italic;font-weight:600;color:#f8f3e9;margin-top:10px}
-#endInner p.sum{font-size:13.8px;color:#d9cfbe;border-left:2px solid #8d7c60;padding-left:12px;margin-top:16px}
-#endInner .creds{font-size:11px;color:#a89c89;margin-top:16px;line-height:1.6}
+#end{align-items:flex-end;justify-content:flex-start;padding:26px}
+#endInner{max-width:min(440px,92vw);padding:26px 28px 22px;text-align:left;
+  font-family:'Lora',Georgia,'Times New Roman',serif;
+  background:linear-gradient(180deg,rgba(12,10,17,.90),rgba(9,8,13,.95));
+  border:1px solid rgba(224,192,138,.28);border-left:3px solid #d9b878;border-radius:4px 16px 16px 4px;
+  box-shadow:0 24px 70px #000c;backdrop-filter:blur(9px)}
+#endInner h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;color:#f7eedd;
+  font-size:clamp(26px,3.6vw,38px);line-height:1.1;margin:0;letter-spacing:.01em}
+#endInner h1 small{display:block;margin-top:10px;font-family:'Lora',Georgia,serif;font-size:10.5px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:#c9ab79}
+#endInner p{font-size:14.5px;line-height:1.72;margin-top:13px;color:#e9e1d3}
+#endInner p.last{font-style:italic;color:#f8f2e6;font-size:15.5px;margin-top:16px}
+#endInner p.sum{font-size:13.4px;color:#cfc4b2;margin-top:18px;padding-top:16px;
+  border-top:1px solid rgba(224,192,138,.22);line-height:1.68}
+#endInner p.sum b{color:#e8cf9f;font-weight:500}
+#endInner .creds{font-size:10.5px;letter-spacing:.04em;color:#9d9280;margin-top:18px;line-height:1.7}
+#endInner #bAgain{margin-top:16px}
 @media(max-width:620px){#end{align-items:center;justify-content:flex-end;padding:10px}
- #endInner{max-width:97vw;padding:15px 16px}#endInner p{font-size:13px}#endInner p.sum{font-size:12.4px}}
+ #endInner{max-width:97vw;padding:18px 18px 16px}#endInner p{font-size:13.2px}#endInner p.sum{font-size:12.2px}}
 
 .rid{max-width:640px;background:rgba(9,8,13,.68);padding:24px 28px 20px;border-radius:22px;
   box-shadow:0 18px 60px #000a;backdrop-filter:blur(6px)}
@@ -112,7 +120,6 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
   </div>
 </div>
 
-<div id="riddle" class="screen"><div class="rid"><h1 id="ridQ"></h1><div id="ridA" class="chips"></div><p id="ridMsg" class="ridmsg"></p></div></div>
 <div id="end" class="screen"><div id="endInner"></div></div>
 
 <script>
@@ -147,7 +154,7 @@ const D={stages:[
   o:{sk:'…mení sa jej pulz. Zavolajte rodinu.',en:'…her pulse is changing. Call the family.'},
   in:{sk:'Chodba bola dlhá a on sa tváril, že ide okolo. V ruke zložený papierik.',en:'The corridor was long and he pretended to walk past. A folded note in his hand.'},
   out:{sk:'Napísal, čo sa nikdy neodvážil povedať nahlas. Ten list som si nechala dvadsať rokov.',en:'He wrote what he never dared to say aloud. I kept that letter for twenty years.'},
-  h:{x:15,y:82.5,r:5,n:{sk:'Nemocničný náramok',en:'A hospital wristband'},w:{sk:'Leží pri školskej lavici. Niekto ho stratil na ceste z izby 214.',en:'It lies by a school bench. Someone lost it on the way out of room 214.'}}},
+  h:{x:49,y:49,r:5,n:{sk:'Nemocničný náramok',en:'A hospital wristband'},w:{sk:'Na zápästí dievčaťa je tenký biely náramok z izby 214.',en:'On the girl’s wrist there is a thin white band from room 214.'}}},
  {img:'assets/s06.webp',t:{sk:'Odchod z domu',en:'Leaving Home'},
   o:{sk:'„Ema zaspala na dvoch stoličkách pri dverách.“',en:'“Ema fell asleep on two chairs by the door.”'},
   in:{sk:'Prázdny byt, krabice, nový začiatok.',en:'An empty flat, boxes, a new beginning.'},
@@ -172,7 +179,7 @@ const D={stages:[
   o:{sk:'„…Mami? Prosím, zobuď sa.“',en:'“…Mom? Please wake up.”'},
   in:{sk:'Prechod, dážď, mokrý asfalt. Skoro doma.',en:'A crossing, rain, wet asphalt. Almost home.'},
   out:{sk:'Svetlá. Zvuk, akoby sa trhalo celé nebo. A potom—',en:'Lights. A sound like the sky tearing. And then—'},
-  h:{x:67.5,y:57,r:11,n:{sk:'Auto z boku',en:'A car from the side'},w:{sk:'Kráčala som cez prechod a pozerala pred seba. Auto prišlo z boku.',en:'I was walking across the crossing, looking straight ahead. The car came from the side.'}}},
+  h:{x:64,y:60,r:11,n:{sk:'Auto z boku',en:'A car from the side'},w:{sk:'Kráčala som cez prechod a pozerala pred seba. Auto prišlo z boku a ja som ho nevidela.',en:'I was walking across the crossing, looking straight ahead. The car came from the side and I never saw it.'}}},
 ]};
 
 const T={
@@ -184,7 +191,7 @@ const T={
   last:'I am awake. You are all here. Every stage of my life was leading me back to you.',
   ep:'Elena, 38. Wife of Adam. Mother of Ema and Tom. After eleven days in room 214 she woke up.',
   credits:'The End',credits2:'Human: concept, story, Elena’s character, game direction. Made with AI assistance.',
-  sum:'What happened: on a rainy evening Elena was walking home across the pedestrian crossing. A car came out of the mist behind her - the driver never saw her in the rain. It hit her on the crossing. She lay in a coma in room 214 for eleven days. What she lived through: her mind walked back through her whole life - the cradle, kindergarten, first love, the wedding, the children, the road home. In every memory one thing did not belong, and exactly those things led her back. How it ended: she woke up. Adam, Ema and Tomi were sitting beside her bed.',
+  sum:'<b>What happened:</b> on a rainy evening Elena was walking home across the pedestrian crossing. A car came out of the mist behind her - the driver never saw her in the rain. It hit her on the crossing. She lay in a coma in room 214 for eleven days. <b>What she lived through:</b> her mind walked back through her whole life - the cradle, kindergarten, first love, the wedding, the children, the road home. In every memory one thing did not belong, and exactly those things led her back. <b>How it ended:</b> she woke up. Adam, Ema and Tomi were sitting beside her bed.',
   ridQ:'One last question before you wake up: what took Elena off that street?',
   ridA:['The rain','A car','The hospital'],
   ridOk:'Yes. Two headlights, wet asphalt — and then room 214.',
@@ -198,7 +205,7 @@ const T={
   last:'Som hore. Ste tu všetci. Každá etapa môjho života ma viedla späť k vám.',
   ep:'Elena, 38 rokov. Manželka Adama. Mama Emy a Tomiho. Po jedenástich dňoch v izbe 214 sa prebudila.',
   credits:'Koniec',credits2:'Človek: nápad, príbeh, postava Eleny, smerovanie hry. Vytvorené s pomocou AI.',
-  sum:'Čo sa stalo: Elena sa v daždivom večeri vracala domov cez prechod pre chodcov. Za jej chrbtom sa z hmly vynorilo auto — v daždi ju vodič nevidel. Zrazil ju na prechode. Jedenásť dní ležala v kóme v izbe 214. Čo prežila: jej myseľ prešla celým jej životom — kolíska, škôlka, prvá láska, svadba, deti, cesta domov. V každej spomienke bola jedna vec, ktorá tam nepatrila, a práve tie ju viedli späť. Ako to dopadlo: prebudila sa. Pri posteli sedeli Adam, Ema a Tomi.',
+  sum:'<b>Čo sa stalo:</b> Elena sa v daždivom večeri vracala domov cez prechod pre chodcov. Za jej chrbtom sa z hmly vynorilo auto — v daždi ju vodič nevidel. Zrazil ju na prechode. Jedenásť dní ležala v kóme v izbe 214. <b>Čo prežila:</b> jej myseľ prešla celým jej životom — kolíska, škôlka, prvá láska, svadba, deti, cesta domov. V každej spomienke bola jedna vec, ktorá tam nepatrila, a práve tie ju viedli späť. <b>Ako to dopadlo:</b> prebudila sa. Pri posteli sedeli Adam, Ema a Tomi.',
   ridQ:'Ešte jedna otázka, kým sa zobudíš: čo vzalo Elenu z tej cesty?',
   ridA:['Dážď','Auto','Nemocnica'],
   ridOk:'Áno. Dve svetlá, mokrý asfalt — a potom izba 214.',
@@ -313,7 +320,7 @@ function found(el,e){
   },650);
   setTimeout(()=>{
     if(cur+1<D.stages.length)buildStage(cur+1);
-    else buildRiddle();
+    else finale();
   },1750);
 }
 function wrong(){
@@ -329,29 +336,6 @@ $('#hintBtn').onclick=()=>{
   if(hs){hs.classList.add('ping');setTimeout(()=>hs.classList.remove('ping'),1200)}
 };
 
-function buildRiddle(){
-  const d=D.stages[D.stages.length-1];
-  $('#riddle').style.backgroundImage="url('"+d.img+"')";
-  $('#ridQ').textContent=t('ridQ');
-  const msg=$('#ridMsg'); msg.textContent='';
-  const box=$('#ridA'); box.innerHTML='';
-  t('ridA').forEach((label,i)=>{
-    const b=document.createElement('button');
-    b.textContent=label;
-    b.onclick=()=>{
-      if(i===1){
-        b.classList.add('ok'); msg.textContent=t('ridOk'); sfx('open');
-        box.querySelectorAll('button').forEach(x=>x.disabled=true);
-        setTimeout(()=>finale(),1700);
-      }else{
-        b.classList.add('bad'); msg.textContent=t('ridNo'); sfx('miss');
-        setTimeout(()=>b.classList.remove('bad'),460);
-      }
-    };
-    box.appendChild(b);
-  });
-  show('riddle');
-}
 
 /* ---------- koniec ---------- */
 function finale(){
