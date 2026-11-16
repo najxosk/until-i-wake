@@ -176,7 +176,8 @@ const T={
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}},
           set(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}};
 const $=s=>document.querySelector(s);
-let L=(LS.get('uiw_lang','')||((navigator.language||'').toLowerCase().startsWith('sk')||(navigator.language||'').toLowerCase().startsWith('cs')?'sk':'en'));
+const _sv=LS.get('uiw_lang','');
+let L=(_sv==='sk'||_sv==='en')?_sv:'en';   /* hlavný jazyk = angličtina, slovenčina je doplnok */
 const t=k=>T[L][k];
 
 /* ---------- zvuk ---------- */
