@@ -238,6 +238,51 @@ function sfx(k){
   if(k==='bad'){tone(150,.2,.06)}
   if(k==='open'){[523,659,784,1047].forEach((f,i)=>tone(f,1.4,.055,'sine',i*.16))}
 }
+
+/* ---------- atmosféra (dažď + tónový podklad) ---------- */
+let amb={ready:false,rain:null,pad:[],padGain:null};
+const ROOTS=[110,110,98,98,87.31,87.31,98,110,110,82.41];
+function noiseBuffer(){
+  const len=Math.floor(ac.sampleRate*4),b=ac.createBuffer(1,len,ac.sampleRate),d=b.getChannelData(0);
+  let last=0;
+  for(let i=0;i<len;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;d[i]=last*3.2}
+  return b;
+}
+function ambInit(){
+  if(!ac||amb.ready)return;
+  const src=ac.createBufferSource();src.buffer=noiseBuffer();src.loop=true;
+  const hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.value=520;
+  const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2400;
+  const g=ac.createGain();g.gain.value=0;
+  src.connect(hp);hp.connect(lp);lp.connect(g);g.connect(master);src.start();
+  g.gain.linearRampToValueAtTime(.04,ac.currentTime+3.5);
+  amb.rain=g;
+  amb.padGain=ac.createGain();amb.padGain.gain.value=0;
+  const pf=ac.createBiquadFilter();pf.type='lowpass';pf.frequency.value=780;
+  amb.padGain.connect(pf);pf.connect(master);
+  amb.padGain.gain.linearRampToValueAtTime(.03,ac.currentTime+4.5);
+  [[1,'sine',.7],[1.5,'triangle',.4]].forEach(([mul,type,v])=>{
+    const o=ac.createOscillator();o.type=type;o.frequency.value=110*mul;
+    const og=ac.createGain();og.gain.value=v;o.connect(og);og.connect(amb.padGain);o.start();
+    amb.pad.push({o,mul});
+  });
+  amb.ready=true;
+}
+function ambStage(i){
+  if(!ac)return;ambInit();if(!amb.ready)return;
+  const root=ROOTS[Math.max(0,Math.min(i,ROOTS.length-1))],now=ac.currentTime;
+  amb.pad.forEach(x=>x.o.frequency.setTargetAtTime(root*x.mul,now,1.3));
+  amb.rain.gain.setTargetAtTime(i>=9?.10:.04,now,1.6);
+}
+function heartbeat(n=4){
+  if(!ac)return;
+  for(let i=0;i<n;i++){const w=i*.62;tone(58,.22,.15,'sine',w);tone(50,.20,.09,'sine',w+.17)}
+}
+function wakeChord(){if(!ac)return;[261.63,329.63,392,587.33].forEach((f,i)=>tone(f,5,.04,'sine',i*.28))}
+function ambOut(){if(!ac||!amb.ready)return;
+  amb.rain.gain.setTargetAtTime(0,ac.currentTime,.7);
+  amb.padGain.gain.setTargetAtTime(0,ac.currentTime,.9)}
+
 function updSnd(){$('#bSnd').textContent=muted?'🔈':'🔊'}
 $('#bSnd').onclick=()=>{muted=!muted;LS.set('uiw_mute',muted?'1':'0');initAudio();
   if(master)master.gain.setTargetAtTime(muted?0:1,ac.currentTime,.05);updSnd()};
@@ -279,6 +324,7 @@ function buildStage(i){
     spots.appendChild(d);
   });
   label();layout();
+  ambStage(i);if(i===D.stages.length-1)heartbeat(4);
   const vo=$('#voice');
   vo.textContent=(s.o&&s.o[L])||'';vo.classList.toggle('on',!!(s.o&&s.o[L]));
   whisper(s.in[L]);
@@ -348,7 +394,7 @@ function finale(){
       <p class="creds">${t('credits')} · ${t('credits2')}</p>
       <button class="big" id="bAgain">${t('again')}</button>`;
     $('#end').style.backgroundImage="url('assets/s11.webp')";
-    show('end');
+    show('end');ambOut();wakeChord();
     $('#bAgain').onclick=()=>{LS.set('uiw3_stage',0);startGame(0)};
   },1000);
 }
