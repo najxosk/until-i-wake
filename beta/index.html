@@ -617,7 +617,7 @@ function label(){
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 
 function buildStage(i){
-  cur=i;locked=false;hintShown=false;pending=null;
+  cur=i;locked=false;hintShown=false;skipResolve=null;
   const s=D.stages[i];
   $('#bg').src=s.img;
   spots.innerHTML='';
@@ -644,7 +644,7 @@ function buildStage(i){
 
 /* ---------- klik ---------- */
 scene.addEventListener('pointerup',e=>{
-  if(locked){if(pending)pending();return;}
+  if(locked){if(skipResolve)skipResolve();return;}
   initAudio();
   const el=document.elementFromPoint(e.clientX,e.clientY);
   const h=el&&el.closest?el.closest('.hs'):null;
@@ -659,7 +659,10 @@ spots.addEventListener('keydown',ev=>{
   found(el,{clientX:r.left+r.width/2,clientY:r.top+r.height/2});
 });
 let pending=null;
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+let skipResolve=null;
 function found(el,e){
+  if(locked)return;
   locked=true;
   const s=D.stages[cur],r=scene.getBoundingClientRect();
   const hs=Array.isArray(s.h)?s.h:[s.h];
@@ -679,10 +682,16 @@ function found(el,e){
     portal.style.clipPath=`circle(150% at ${px}% ${py}%)`;
     sfx('open');
   };
-  const t1=setTimeout(()=>{if(s.out&&s.out[L])whisper(s.out[L])},2100);
-  const t2=setTimeout(openPortal,3600);
-  const t3=setTimeout(goNext,5200);
-  pending=()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);pending=null;openPortal();setTimeout(goNext,300)};
+  const skip=new Promise(res=>{skipResolve=res});
+  (async()=>{
+    await Promise.race([sleep(2200),skip]);
+    if(s.out&&s.out[L])whisper(s.out[L]);
+    await Promise.race([sleep(1500),skip]);
+    openPortal();
+    await Promise.race([sleep(1700),skip]);
+    skipResolve=null;
+    goNext();
+  })();
 }
 function wrong(){
   sfx('bad');
