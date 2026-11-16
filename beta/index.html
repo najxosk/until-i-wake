@@ -110,7 +110,7 @@ const D={stages:[
   o:{sk:'…dýcha sama. To je dobrý znak.',en:'…she is breathing on her own. That is a good sign.'},
   in:{sk:'Svet bol prázdny papier a ja som chcela všetky farby.',en:'The world was a blank sheet and I wanted every colour.'},
   out:{sk:'Do každého obrázka som kreslila slnko. Aj do tých nočných.',en:'I drew a sun into every picture. Even the night ones.'},
-  h:{x:66.5,y:92.5,r:4.5,n:{sk:'Jednorazová rukavica',en:'A disposable glove'},w:{sk:'V škôlke sa nechávajú rukavice na hranie. Táto prišla z izby 214.',en:'In a kindergarten you leave the play gloves behind. This one came from room 214.'}}},
+  h:[{x:81,y:40.5,r:5,n:{sk:'Stetoskop v polici',en:'A stethoscope on the shelf'},w:{sk:'Medzi hračkami visí stetoskop. Nikto v škôlke ho nepotrebuje.',en:'A stethoscope hangs among the toys. Nobody in a kindergarten needs one.'}},{x:87.5,y:73,r:5,n:{sk:'Defibrilátor na koberci',en:'A defibrillator on the rug'},w:{sk:'Na koberci medzi kockami leží malý defibrilátor z izby 214.',en:'A small defibrillator from room 214 lies on the rug among the blocks.'}}]},
  {img:'assets/s03.webp',t:{sk:'Prvý deň v škole',en:'First Day of School'},
   o:{sk:'Sestrička: „Hovorte na ňu. Počuje vás.“',en:'Nurse: “Talk to her. She can hear you.”'},
   in:{sk:'Mama ma pri dverách pustila za ruku. Bola som taká malá.',en:'Mum let go of my hand at the door. I was so small.'},
@@ -145,7 +145,7 @@ const D={stages:[
   o:{sk:'Lekár: „Dnes prvýkrát stlačila mi ruku.“',en:'Doctor: “Today she squeezed my hand for the first time.”'},
   in:{sk:'Dva malé hlásky. Lepkavé ruky. Domov.',en:'Two small voices. Sticky hands. Home.'},
   out:{sk:'Ema nás nakreslila, ako sa držíme za ruky. „Aby sa nikto nestratil,“ povedala.',en:'Ema drew us holding hands. “So nobody gets lost,” she said.'},
-  h:{x:57.8,y:90.5,r:4.5,n:{sk:'Blister s liekmi',en:'A blister pack of pills'},w:{sk:'Pri detských kresbách nechal niekto lieky z izby 214.',en:'Someone left the pills from room 214 beside the drawings of the children.'}}},
+  h:{x:7.5,y:51,r:5.5,n:{sk:'Skúmavky pri kávovare',en:'Test tubes by the kettle'},w:{sk:'Pri rannej káve stoja skúmavky. Tie patria do laboratória, nie do kuchyne.',en:'Test tubes stand beside the morning coffee. They belong to a laboratory, not a kitchen.'}}},
  {img:'assets/s10.webp',t:{sk:'Dážď',en:'The Rain'},
   o:{sk:'„…Mami? Prosím, zobuď sa.“',en:'“…Mom? Please wake up.”'},
   in:{sk:'Len trochu dažďa. Skoro doma.',en:'Only a little rain. Almost home.'},
@@ -231,10 +231,13 @@ function buildStage(i){
   const s=D.stages[i];
   $('#bg').src=s.img;
   spots.innerHTML='';
-  const d=document.createElement('div');
-  d.className='hs';
-  d.style.left=s.h.x+'%';d.style.top=s.h.y+'%';d.style.width=(s.h.r*2)+'%';
-  spots.appendChild(d);
+  const hs=Array.isArray(s.h)?s.h:[s.h];
+  hs.forEach((hh,k)=>{
+    const d=document.createElement('div');
+    d.className='hs';d.dataset.i=k;
+    d.style.left=hh.x+'%';d.style.top=hh.y+'%';d.style.width=(hh.r*2)+'%';
+    spots.appendChild(d);
+  });
   label();layout();
   const vo=$('#voice');
   vo.textContent=(s.o&&s.o[L])||'';vo.classList.toggle('on',!!(s.o&&s.o[L]));
@@ -259,9 +262,11 @@ scene.addEventListener('pointerup',e=>{
 function found(el,e){
   locked=true;
   const s=D.stages[cur],r=scene.getBoundingClientRect();
+  const hs=Array.isArray(s.h)?s.h:[s.h];
+  const ho=hs[+el.dataset.i]||hs[0];
   el.classList.add('gone','ping');
   sfx('good');
-  whisper(`<b>${s.h.n[L]}</b> — ${s.h.w[L]}`);
+  whisper(`<b>${ho.n[L]}</b> — ${ho.w[L]}`);
   const px=((e.clientX-r.left)/r.width)*100,py=((e.clientY-r.top)/r.height)*100;
   const nextImg=(cur+1<D.stages.length)?D.stages[cur+1].img:'assets/s11.webp';
   setTimeout(()=>{
