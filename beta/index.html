@@ -13,7 +13,7 @@ html,body{height:100%;overflow:hidden;background:#07060b;color:#f2ecdd;
   font-family:"Optima","Palatino Linotype",Palatino,Georgia,serif}
 #app{position:fixed;inset:0;display:flex;flex-direction:column;
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-#hud{display:flex;align-items:center;gap:10px;padding:7px 12px;font-size:12.5px;color:#b9aec9;flex:0 0 auto;z-index:20}
+#hud{position:relative;z-index:40;display:flex;align-items:center;gap:10px;padding:7px 12px;font-size:12.5px;color:#b9aec9;flex:0 0 auto}
 #stageLbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #stageLbl b{color:#e8c37a;font-weight:600}
 .tbtn{background:none;border:1px solid #3a3348;color:#b9aec9;border-radius:7px;padding:5px 9px;font:inherit;font-size:12px;cursor:pointer}
@@ -55,7 +55,7 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
   font:inherit;font-size:16px;font-weight:600;cursor:pointer}
 .ghost{margin-top:10px;background:none;border:1px solid #453b58;color:#c3b7d4;border-radius:12px;
   padding:12px 24px;font:inherit;font-size:14px;cursor:pointer}
-#end{align-items:flex-end;justify-content:flex-start;padding:26px}
+#end{align-items:flex-end;justify-content:flex-start;padding:26px;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 #endInner{max-width:min(440px,92vw);padding:26px 28px 22px;text-align:left;
   font-family:'Lora',Georgia,'Times New Roman',serif;
   background:linear-gradient(180deg,rgba(12,10,17,.90),rgba(9,8,13,.95));
@@ -129,88 +129,392 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
    Žiadna tma, žiadna lampa, žiadne čierne obrazovky.
    ===================================================================== */
 
-const D={stages:[
- {img:'assets/s01.webp',t:{sk:'Kolíska',en:'The Cradle'},
-  o:{sk:'Ticho. Len prístroje a dážď za oknom.',en:'Quiet. Only the machines and the rain outside.'},
-  in:{sk:'Niekto spieva. Niečo mäkké ma stráži z police.',en:'Someone is singing. Something soft is guarding me from the shelf.'},
-  out:{sk:'Mama spievala, kým som nezaspala. Môj macko ma strážil z police.',en:'Mom sang until I fell asleep. My teddy watched over me from the shelf.'},
-  h:{x:89.5,y:22,r:8,n:{sk:'O jedno svetlo na oblohe navyše',en:'One light too many in the sky'},w:{sk:'Mesiac aj slnko naraz. Sen si nedrží pravidlá.',en:'Moon and sun at once. A dream does not keep the rules.'}}},
- {img:'assets/s02.webp',t:{sk:'Škôlka',en:'Kindergarten'},
-  o:{sk:'„…dýcha sama. To je dobrý znak.“',en:'“…she is breathing on her own. That is a good sign.”'},
-  in:{sk:'Kocky, kriedy, detský smiech. A niečo tu nesedí.',en:'Blocks, chalk, children laughing. And something is out of place.'},
-  out:{sk:'Cez koberec prešla vlna, ktorá tam nepatrila.',en:'A wave crossed the rug that did not belong there.'},
-  h:{x:87,y:74.5,r:5,n:{sk:'Monitor na koberci',en:'A monitor on the rug'},w:{sk:'Na koberci pri deťoch leží monitor z izby 214.',en:'A monitor from room 214 lies on the rug beside the children.'}}},
- {img:'assets/s03.webp',t:{sk:'Prvý deň v škole',en:'First Day of School'},
-  o:{sk:'Sestrička: „Hovorte na ňu. Počuje vás.“',en:'Nurse: “Talk to her. She can hear you.”'},
-  in:{sk:'Mama ma pri dverách pustila za ruku. Bola som taká malá.',en:'Mum let go of my hand at the door. I was so small.'},
-  out:{sk:'Zavesila som tašku na háčik a zostala. Bola som statočná.',en:'I hung my bag on the hook and stayed. I was brave.'},
-  h:{x:60.5,y:90,r:7.5,n:{sk:'Plastové nazúvačky',en:'Plastic clogs'},w:{sk:'Medzi koženými topánkami jedno dieťa z inej doby.',en:'Among the leather shoes, one child from another time.'}}},
- {img:'assets/s04.webp',t:{sk:'Dospievanie',en:'Growing Up'},
-  o:{sk:'Adam neodchádza z izby ani na kávu.',en:'Adam has not left the room, not even for coffee.'},
-  in:{sk:'Niektoré noci som si zapisovala, čo som nevedela povedať nahlas.',en:'Some nights I wrote down what I could not say aloud.'},
-  out:{sk:'Moje tajomstvá mali malý zámok. Moje srdce nie.',en:'My secrets had a small lock. My heart did not.'},
-  h:{x:33,y:75,r:13,n:{sk:'Cudzie kovové zábradlie',en:'The wrong metal rail'},w:{sk:'Jej posteľ bola vždy teplá. Toto je iná posteľ.',en:'Her bed was always warm. This is a different bed.'}}},
- {img:'assets/s05.webp',t:{sk:'Prvá láska',en:'First Love'},
-  o:{sk:'…mení sa jej pulz. Zavolajte rodinu.',en:'…her pulse is changing. Call the family.'},
-  in:{sk:'Chodba bola dlhá a on sa tváril, že ide okolo. V ruke zložený papierik.',en:'The corridor was long and he pretended to walk past. A folded note in his hand.'},
-  out:{sk:'Napísal, čo sa nikdy neodvážil povedať nahlas. Ten list som si nechala dvadsať rokov.',en:'He wrote what he never dared to say aloud. I kept that letter for twenty years.'},
-  h:{x:47.5,y:47.3,r:6,n:{sk:'Náramok s menom ELENA',en:'A band with the name ELENA'},w:{sk:'Na zápästí má tenký biely náramok s vytlačeným menom: ELENA. Taký, aký dávajú v nemocnici.',en:'On her wrist there is a thin white band printed with the name ELENA. The kind a hospital gives you.'}}},
- {img:'assets/s06.webp',t:{sk:'Odchod z domu',en:'Leaving Home'},
-  o:{sk:'„Ema zaspala na dvoch stoličkách pri dverách.“',en:'“Ema fell asleep on two chairs by the door.”'},
-  in:{sk:'Prázdny byt, krabice, nový začiatok.',en:'An empty flat, boxes, a new beginning.'},
-  out:{sk:'Svetlo zhora bolo príliš biele na obyčajný byt.',en:'The light from above was too white for an ordinary flat.'},
-  h:{x:46.5,y:6.5,r:9,n:{sk:'Nemocničné svetlo na strope',en:'A hospital light on the ceiling'},w:{sk:'Dlhé biele svetlo z nemocničnej chodby svieti v novom byte.',en:'The long white light of a hospital corridor is shining in the new flat.'}}},
- {img:'assets/s07.webp',t:{sk:'Stretnutie s Adamom',en:'Meeting Adam'},
-  o:{sk:'…päť dní. Nikto nič nehovorí.',en:'…five days. Nobody says anything.'},
-  in:{sk:'Daždivý utorok. Kaviareň. Cudzinec s láskavými očami.',en:'A rainy Tuesday. A café. A stranger with kind eyes.'},
-  out:{sk:'Vylial mi kávu a kúpil mi novú. Rozprávali sme sa, až kým nezatvorili.',en:'He spilled my coffee and bought me another. We talked until they closed.'},
-  h:{x:14.5,y:80,r:7.5,n:{sk:'Predlžovačka',en:'Power strip'},w:{sk:'V kaviarni, kde sa káva nalieva ručne.',en:'In a café where coffee is poured by hand.'}}},
- {img:'assets/s08.webp',t:{sk:'Svadba',en:'The Wedding'},
-  o:{sk:'Adam jej číta listy, ktoré jej kedysi písal.',en:'Adam reads her the letters he once wrote.'},
-  in:{sk:'Všetci, ktorých som ľúbila, v jednej záhrade.',en:'Everyone I loved, in one garden.'},
-  out:{sk:'„Navždy,“ povedal. Verila som mu. Stále verím.',en:'“Forever,” he said. I believed him. I still do.'},
-  h:{x:26.5,y:59,r:12,n:{sk:'Niekto v modrom',en:'Someone in blue'},w:{sk:'Prišla z izby 214. Ako hosť.',en:'She came from room 214. As a guest.'}}},
- {img:'assets/s09.webp',t:{sk:'Ema a Tomi',en:'Ema and Tom'},
-  o:{sk:'Lekár: „Dnes prvýkrát stlačila mi ruku.“',en:'Doctor: “Today she squeezed my hand for the first time.”'},
-  in:{sk:'Dva malé hlásky. Lepkavé ruky. Domov.',en:'Two small voices. Sticky hands. Home.'},
-  out:{sk:'Ema nás nakreslila, ako sa držíme za ruky. „Aby sa nikto nestratil,“ povedala.',en:'Ema drew us holding hands. “So nobody gets lost,” she said.'},
-  h:{x:7.5,y:51,r:5.5,n:{sk:'Skúmavky pri kávovare',en:'Test tubes by the kettle'},w:{sk:'Pri rannej káve stoja skúmavky. Tie patria do laboratória, nie do kuchyne.',en:'Test tubes stand beside the morning coffee. They belong to a laboratory, not a kitchen.'}}},
- {img:'assets/s10.webp',t:{sk:'Dážď',en:'The Rain'},
-  o:{sk:'„…Mami? Prosím, zobuď sa.“',en:'“…Mom? Please wake up.”'},
-  in:{sk:'Prechod, dážď, mokrý asfalt. Skoro doma.',en:'A crossing, rain, wet asphalt. Almost home.'},
-  out:{sk:'Svetlá. Zvuk, akoby sa trhalo celé nebo. A potom—',en:'Lights. A sound like the sky tearing. And then—'},
-  h:{x:64,y:60,r:11,n:{sk:'Auto z boku',en:'A car from the side'},w:{sk:'Kráčala som cez prechod a pozerala pred seba. Auto prišlo z boku a ja som ho nevidela.',en:'I was walking across the crossing, looking straight ahead. The car came from the side and I never saw it.'}}},
-]};
+const D={
+ "stages": [
+  {
+   "img": "assets/s01.webp",
+   "t": {
+    "sk": "Kolíska",
+    "en": "The Cradle"
+   },
+   "o": {
+    "sk": "Už len prístroje, ktoré za ňu počítajú. A dážď, ktorý neprestal.",
+    "en": "Only the machines now, counting for her. And the rain, which has not stopped."
+   },
+   "in": {
+    "sk": "Niekto nado mnou spieva, z police ma stráži niečo mäkké.",
+    "en": "Someone is singing above me; something soft keeps watch from the shelf."
+   },
+   "out": {
+    "sk": "Mama spievala, kým som nezažmúrila, a macko na polici ani raz neodvrátil pohľad.",
+    "en": "My mother sang until my eyes closed, and the bear on the shelf never once looked away."
+   },
+   "h": {
+    "x": 89.5,
+    "y": 22,
+    "r": 8,
+    "n": {
+     "sk": "Druhé slnko",
+     "en": "A second sun"
+    },
+    "w": {
+     "sk": "Mesiac aj slnko naraz. V sne sa o oblohu nikto nestará.",
+     "en": "The moon is out, and the sun with it. Nobody in a dream checks the sky."
+    }
+   }
+  },
+  {
+   "img": "assets/s02.webp",
+   "t": {
+    "sk": "Škôlka",
+    "en": "Kindergarten"
+   },
+   "o": {
+    "sk": "„Dýcha sama,“ hovorí sestrička. „To sa počíta.“",
+    "en": "“She's breathing by herself,” the nurse says. “That counts for something.”"
+   },
+   "in": {
+    "sk": "Kocky, kriedový prach, detský krik — a jedna vec, ktorá tu stojí na nesprávnom mieste.",
+    "en": "Blocks, chalk dust, children shouting for the sake of it — and one thing here that has been moved."
+   },
+   "out": {
+    "sk": "Cez koberec prešlo niečo, čo nezanechalo stopu, a izba si to nevšimla.",
+    "en": "Something crossed the rug and left no footprint, and the room did not notice."
+   },
+   "h": {
+    "x": 87,
+    "y": 74.5,
+    "r": 5,
+    "n": {
+     "sk": "Monitor na koberci",
+     "en": "A monitor on the rug"
+    },
+    "w": {
+     "sk": "Na koberci medzi kockami leží monitor, kábel mu visí cez okraj. Na páske je napísané: izba 214.",
+     "en": "A monitor lies on the rug among the blocks, its cable trailing off the edge. Room 214 is written on the tape."
+    }
+   }
+  },
+  {
+   "img": "assets/s03.webp",
+   "t": {
+    "sk": "Prvý deň v škole",
+    "en": "First Day of School"
+   },
+   "o": {
+    "sk": "„Hovorte na ňu,“ povie sestrička. „Počuje vás.“",
+    "en": "“Talk to her,” the nurse says. “She can hear you.”"
+   },
+   "in": {
+    "sk": "Mama ma pri dverách pustila za ruku a ustúpila; bola som veľmi malá.",
+    "en": "My mother let go of my hand at the door and stepped back; I was very small."
+   },
+   "out": {
+    "sk": "Tašku som zavesila na háčik vyšší odo mňa a neplakala, a vtedy to bola statočnosť.",
+    "en": "I hung my bag on a hook taller than me and did not cry, and that was courage then."
+   },
+   "h": {
+    "x": 60.5,
+    "y": 90,
+    "r": 7.5,
+    "n": {
+     "sk": "Pár plastových nazúvačiek",
+     "en": "A pair of plastic clogs"
+    },
+    "w": {
+     "sk": "Medzi koženými topánkami stoja jedny plastové nazúvačky, ešte mokré. Sú z inej doby.",
+     "en": "One pair of plastic clogs stands among the leather shoes, still wet. They are from another decade."
+    }
+   }
+  },
+  {
+   "img": "assets/s04.webp",
+   "t": {
+    "sk": "Denník",
+    "en": "The Diary"
+   },
+   "o": {
+    "sk": "Adam nevyšiel z izby. Nešiel si ani po kávu.",
+    "en": "Adam has not left the room. He has not even gone for coffee."
+   },
+   "in": {
+    "sk": "Niektoré noci som si zapisovala, čo som nevedela povedať nahlas, a potom som zošit schovala.",
+    "en": "Some nights I wrote down what I could not say out loud, then hid the book."
+   },
+   "out": {
+    "sk": "Zošit mal malý zámok a mne to pripadalo ako dosť aj na srdce.",
+    "en": "The book had a small lock, and I mistook it for keeping myself shut."
+   },
+   "h": {
+    "x": 33,
+    "y": 75,
+    "r": 13,
+    "n": {
+     "sk": "Biele zábradlie pri posteli",
+     "en": "A white rail on the bed"
+    },
+    "w": {
+     "sk": "Pozdĺž postele je prikrútené zábradlie. V mojej izbe bol nad posteľou plagát, nie toto.",
+     "en": "A rail runs along the side of the bed, screwed to the frame. My room had posters over the bed, not a rail."
+    }
+   }
+  },
+  {
+   "img": "assets/s05.webp",
+   "t": {
+    "sk": "Prvá láska",
+    "en": "First Love"
+   },
+   "o": {
+    "sk": "„Pulz sa jej mení,“ povie niekto. „Zavolajte rodinu.“",
+    "en": "“Her pulse is changing,” someone says. “Call the family.”"
+   },
+   "in": {
+    "sk": "Chodba bola dlhá a on prešiel okolo dvakrát, kým sa zastavil s poskladaným papierikom v ruke.",
+    "en": "The corridor was long, and he walked past twice before he stopped, a folded note in his hand."
+   },
+   "out": {
+    "sk": "Napísal, čo nevedel povedať, a ten list si nechávam dvadsať rokov.",
+    "en": "He wrote down what he could not say, and I have kept that letter twenty years."
+   },
+   "h": {
+    "x": 47.5,
+    "y": 47.3,
+    "r": 6,
+    "n": {
+     "sk": "Biely náramok s menom ELENA",
+     "en": "A white band, printed ELENA"
+    },
+    "w": {
+     "sk": "Na zápästí má tenký biely náramok s vytlačeným menom: ELENA. Taký, aký vám dajú v nemocnici a nikto ho nesníme.",
+     "en": "A thin white band sits on her wrist, printed with her name: ELENA. The kind a hospital puts on you and nobody takes off."
+    }
+   }
+  },
+  {
+   "img": "assets/s06.webp",
+   "t": {
+    "sk": "Odchod z domu",
+    "en": "Leaving Home"
+   },
+   "o": {
+    "sk": "„Ema zaspala na dvoch stoličkách pri dverách,“ povie Adam. Nikomu.",
+    "en": "“Ema fell asleep on two chairs by the door,” Adam says, to nobody."
+   },
+   "in": {
+    "sk": "Prázdny byt, krabice pri stene, vôňa farby a nič iné.",
+    "en": "An empty flat, boxes stacked against the wall, the smell of paint and nothing else."
+   },
+   "out": {
+    "sk": "Svetlo na strope bolo biele ako na chodbe, nie ako v byte.",
+    "en": "The light on the ceiling was the white of a corridor, not of a flat."
+   },
+   "h": {
+    "x": 46.5,
+    "y": 6.5,
+    "r": 9,
+    "n": {
+     "sk": "Nemocničné svetlo na strope",
+     "en": "A hospital light on the ceiling"
+    },
+    "w": {
+     "sk": "Stropom sa ťahá dlhá biela žiarivka. Bzučí tak, ako bzučia chodbové svetlá o štvrtej ráno.",
+     "en": "A long white tube runs the whole length of the ceiling. It hums the way corridor lights hum at four in the morning."
+    }
+   }
+  },
+  {
+   "img": "assets/s07.webp",
+   "t": {
+    "sk": "Daždivý utorok",
+    "en": "A Rainy Tuesday"
+   },
+   "o": {
+    "sk": "„Päť dní,“ povie niekto. Potom už nikto nič.",
+    "en": "“Five days,” someone says, and then nobody says anything."
+   },
+   "in": {
+    "sk": "Mokrý utorok, kaviarenské okno stekajúce dažďom, cudzinec, ktorý sa na mňa pozrel pridlho.",
+    "en": "A wet Tuesday, a café window running with rain, a stranger who looked at me too long."
+   },
+   "out": {
+    "sk": "Zhodil mi kávu, kúpil novú a rozprávali sme sa, kým nezačali stavať stoličky na stoly.",
+    "en": "He knocked over my coffee, bought me another, and we talked until the chairs went up on the tables."
+   },
+   "h": {
+    "x": 14.5,
+    "y": 80,
+    "r": 7.5,
+    "n": {
+     "sk": "Predlžovačka pod stolom",
+     "en": "A power strip under the table"
+    },
+    "w": {
+     "sk": "Pod stolom leží predlžovačka s tromi zapojenými zástrčkami. V tejto kaviarni toľko prúdu nikto nepotrebuje.",
+     "en": "A power strip lies under the table with three plugs in it. Nobody in this café needs that much current."
+    }
+   }
+  },
+  {
+   "img": "assets/s08.webp",
+   "t": {
+    "sk": "Svadba",
+    "en": "The Wedding"
+   },
+   "o": {
+    "sk": "Adam jej číta listy, ktoré jej kedysi písal. Nahlas, od začiatku.",
+    "en": "Adam is reading her the letters he wrote her, out loud, from the beginning."
+   },
+   "in": {
+    "sk": "Všetci, ktorých som kedy ľúbila, stoja v jednej záhrade, vo sviatočných topánkach.",
+    "en": "Everyone I ever loved stands in one garden, in their good shoes."
+   },
+   "out": {
+    "sk": "Povedal navždy a ja som mu uverila, a neprestala som.",
+    "en": "He said forever and I believed him, and I have not stopped."
+   },
+   "h": {
+    "x": 26.5,
+    "y": 59,
+    "r": 12,
+    "n": {
+     "sk": "Niekto v nemocničnej modrej",
+     "en": "Someone in hospital blue"
+    },
+    "w": {
+     "sk": "Stojí na okraji fotografií, v modrom, s pohárom, z ktorého sa nenapije. Prišla z izby 214.",
+     "en": "She stands at the edge of the photographs, in blue, holding a glass she never drinks from. She came from room 214."
+    }
+   }
+  },
+  {
+   "img": "assets/s09.webp",
+   "t": {
+    "sk": "Ema a Tomi",
+    "en": "Ema and Tomi"
+   },
+   "o": {
+    "sk": "„Dnes mi stisla ruku,“ povie lekár. „Prvýkrát.“",
+    "en": "“She squeezed my hand today,” the doctor says. “First time.”"
+   },
+   "in": {
+    "sk": "Dva malé hlasy z vedľajšej izby, lepkavé ruky na stole, celý domov.",
+    "en": "Two small voices in the next room, sticky hands on the table, the whole of home."
+   },
+   "out": {
+    "sk": "Ema nás nakreslila, ako sa držíme za ruky, aby sa nikto nestratil.",
+    "en": "Ema drew the four of us holding hands, so that nobody gets lost."
+   },
+   "h": {
+    "x": 7.5,
+    "y": 51,
+    "r": 5.5,
+    "n": {
+     "sk": "Skúmavky pri kanvici",
+     "en": "Test tubes by the kettle"
+    },
+    "w": {
+     "sk": "V stojane pri kanvici stoja tri skúmavky, v jednej je do polovice číra tekutina. Patria do laboratória.",
+     "en": "Three test tubes stand in a rack beside the coffee pot, one half full of something clear. They belong in a laboratory."
+    }
+   }
+  },
+  {
+   "img": "assets/s10.webp",
+   "t": {
+    "sk": "Dážď",
+    "en": "The Rain"
+   },
+   "o": {
+    "sk": "„Mami? Mami, prosím, zobuď sa.“",
+    "en": "“Mom? Mom, please wake up.”"
+   },
+   "in": {
+    "sk": "Prechod, dážď, asfalt čierny od vody — skoro doma.",
+    "en": "The crossing, the rain, asphalt black with water — almost home."
+   },
+   "out": {
+    "sk": "Dve svetlá a zvuk, akoby sa nebo trhalo, a potom—",
+    "en": "Two lights and a sound like the sky coming apart, and then—"
+   },
+   "h": {
+    "x": 64,
+    "y": 60,
+    "r": 11,
+    "n": {
+     "sk": "Auto z boku",
+     "en": "A car from the side"
+    },
+    "w": {
+     "sk": "Kráčala som cez prechod a pozerala som rovno na druhý obrubník. Auto prišlo z boku a ja som ho nevidela.",
+     "en": "I was walking across, looking straight ahead at the far kerb. The car came from the side, and I never saw it."
+    }
+   }
+  }
+ ]
+};
 
 const T={
- en:{series:'Dreamers · Story I',title:'Until I Wake',
-  intro:'Rain. Headlights. Then silence. Elena has been in a coma for eleven days. Somewhere deep inside she is still dreaming, walking back through every stage of her life. In each memory one thing does not belong. Tap it — and the dream opens.',
-  start:'Begin the dream',cont:'Continue',stage:'Stage',hint:'Hint',
-  hintTxt:'Look closer. Something here is out of place.',
-  again:'Play again',finT:'Waking Up',
-  last:'I am awake. You are all here. Every stage of my life was leading me back to you.',
-  ep:'Elena, 38. Wife of Adam. Mother of Ema and Tom. After eleven days in room 214 she woke up.',
-  credits:'The End',credits2:'Human: concept, story, Elena’s character, game direction. Made with AI assistance.',
-  sum:'<b>What happened:</b> on a rainy evening Elena was walking home across the pedestrian crossing. A car came out of the mist behind her - the driver never saw her in the rain. It hit her on the crossing. She lay in a coma in room 214 for eleven days. <b>What she lived through:</b> her mind walked back through her whole life - the cradle, kindergarten, first love, the wedding, the children, the road home. In every memory one thing did not belong, and exactly those things led her back. <b>How it ended:</b> she woke up. Adam, Ema and Tomi were sitting beside her bed.',
-  ridQ:'One last question before you wake up: what took Elena off that street?',
-  ridA:['The rain','A car','The hospital'],
-  ridOk:'Yes. Two headlights, wet asphalt — and then room 214.',
-  ridNo:'Not that. Think of the last thing she saw.',
-  miss:['That belongs here.','Not that one.','Keep looking.']},
- sk:{series:'Snílkovia · Príbeh I',title:'Kým sa zobudím',
-  intro:'Dážď. Svetlá áut. Potom ticho. Elena je už jedenásť dní v kóme. Niekde hlboko vo vnútri stále sníva a prechádza späť každou etapou svojho života. V každej spomienke je jedna vec, ktorá tam nepatrí. Ťukni na ňu — a sen sa otvorí.',
-  start:'Začať sen',cont:'Pokračovať',stage:'Etapa',hint:'Nápoveda',
-  hintTxt:'Pozri sa bližšie. Niečo tu nepatrí.',
-  again:'Hrať znova',finT:'Prebudenie',
-  last:'Som hore. Ste tu všetci. Každá etapa môjho života ma viedla späť k vám.',
-  ep:'Elena, 38 rokov. Manželka Adama. Mama Emy a Tomiho. Po jedenástich dňoch v izbe 214 sa prebudila.',
-  credits:'Koniec',credits2:'Človek: nápad, príbeh, postava Eleny, smerovanie hry. Vytvorené s pomocou AI.',
-  sum:'<b>Čo sa stalo:</b> Elena sa v daždivom večeri vracala domov cez prechod pre chodcov. Za jej chrbtom sa z hmly vynorilo auto — v daždi ju vodič nevidel. Zrazil ju na prechode. Jedenásť dní ležala v kóme v izbe 214. <b>Čo prežila:</b> jej myseľ prešla celým jej životom — kolíska, škôlka, prvá láska, svadba, deti, cesta domov. V každej spomienke bola jedna vec, ktorá tam nepatrila, a práve tie ju viedli späť. <b>Ako to dopadlo:</b> prebudila sa. Pri posteli sedeli Adam, Ema a Tomi.',
-  ridQ:'Ešte jedna otázka, kým sa zobudíš: čo vzalo Elenu z tej cesty?',
-  ridA:['Dážď','Auto','Nemocnica'],
-  ridOk:'Áno. Dve svetlá, mokrý asfalt — a potom izba 214.',
-  ridNo:'To nie. Spomeň si, čo videla naposledy.',
-  miss:['To sem patrí.','Toto nie.','Hľadaj ďalej.']}
+ "en": {
+  "series": "Dreamers · Story I",
+  "title": "Until I Wake",
+  "intro": "Rain, headlights, then nothing. Elena has been in room 214 for eleven days, and somewhere beneath the coma she is still walking back through the rooms of her life. Each memory is almost right. One thing in it does not belong — touch it, and the dream opens.",
+  "start": "Step into the dream",
+  "cont": "Continue",
+  "stage": "Stage",
+  "hint": "Hint",
+  "hintTxt": "Look closer. Something here is out of place.",
+  "again": "Play again",
+  "finT": "Waking Up",
+  "last": "I'm awake. You're all here. Every year I lived was a way of getting back to this room.",
+  "ep": "Elena, 38. Adam's wife. Ema and Tomi's mother. Eleven days in room 214, and then she woke up.",
+  "credits": "The End",
+  "credits2": "Concept, story, Elena, direction: a human. Built with AI assistance.",
+  "sum": "<b>What happened:</b> Elena was walking home on a rainy evening. A car came out of the rain from the side; the driver never saw her, and it hit her on the crossing. She lay in room 214 for eleven days. <b>What she lived through:</b> her mind went back the way she had come — the cradle, the kindergarten, the first letter, the wedding, the children, the road home — and in every memory one thing was wrong, and exactly those wrong things carried her forward. <b>How it ended:</b> she woke up. Adam, Ema and Tomi were sitting beside the bed.",
+  "ridQ": "One last question before you wake up: what took Elena off that street?",
+  "ridA": [
+   "The rain",
+   "A car",
+   "The hospital"
+  ],
+  "ridOk": "Yes. Two headlights, wet asphalt — and then room 214.",
+  "ridNo": "Not that. Think of the last thing she saw.",
+  "miss": [
+   "That belongs in this memory.",
+   "Not that one.",
+   "Look again. Slower."
+  ]
+ },
+ "sk": {
+  "series": "Snílkovia · Príbeh I",
+  "title": "Kým sa zobudím",
+  "intro": "Dážď, svetlá áut, potom nič. Elena leží jedenásť dní v izbe 214 a niekde pod kómou stále kráča späť cez izby svojho života. Každá spomienka je takmer správna. Jedna vec v nej nepatrí — dotkni sa jej a sen sa otvorí.",
+  "start": "Vstúp do sna",
+  "cont": "Pokračovať",
+  "stage": "Etapa",
+  "hint": "Nápoveda",
+  "hintTxt": "Pozri sa bližšie. Niečo tu nepatrí.",
+  "again": "Hrať znova",
+  "finT": "Prebudenie",
+  "last": "Som hore. Ste tu všetci. Každý rok môjho života ma viedol späť do tejto izby.",
+  "ep": "Elena, 38 rokov. Adamova žena. Mama Emy a Tomiho. Jedenásť dní v izbe 214 — a potom sa zobudila.",
+  "credits": "Koniec",
+  "credits2": "Nápad, príbeh, Elena, smerovanie: človek. Vytvorené s pomocou AI.",
+  "sum": "<b>Čo sa stalo:</b> Elena sa v daždivom večeri vracala domov. Auto sa z dažďa vynorilo z boku — vodič ju nevidel — a zrazilo ju na prechode. Jedenásť dní ležala v izbe 214. <b>Čo prežila:</b> jej myseľ sa vrátila tou istou cestou, akou prišla — kolíska, škôlka, prvý list, svadba, deti, cesta domov — a v každej spomienke bolo niečo zle; práve tie chyby ju viedli ďalej. <b>Ako to dopadlo:</b> zobudila sa. Pri posteli sedeli Adam, Ema a Tomi.",
+  "ridQ": "Ešte jedna otázka, kým sa zobudíš: čo vzalo Elenu z tej cesty?",
+  "ridA": [
+   "Dážď",
+   "Auto",
+   "Nemocnica"
+  ],
+  "ridOk": "Áno. Dve svetlá, mokrý asfalt — a potom izba 214.",
+  "ridNo": "To nie. Spomeň si, čo videla naposledy.",
+  "miss": [
+   "To patrí sem.",
+   "Toto nie.",
+   "Pozri sa znova. Pomalšie."
+  ]
+ }
 };
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}},
           set(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}};
@@ -313,14 +617,14 @@ function label(){
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
 
 function buildStage(i){
-  cur=i;locked=false;hintShown=false;
+  cur=i;locked=false;hintShown=false;pending=null;
   const s=D.stages[i];
   $('#bg').src=s.img;
   spots.innerHTML='';
   const hs=Array.isArray(s.h)?s.h:[s.h];
   hs.forEach((hh,k)=>{
     const d=document.createElement('div');
-    d.className='hs';d.dataset.i=k;
+    d.className='hs';d.dataset.i=k;d.tabIndex=0;d.setAttribute('role','button');d.setAttribute('aria-label',hh.n[L]);
     d.style.left=hh.x+'%';d.style.top=hh.y+'%';d.style.width=(hh.r*2)+'%';
     spots.appendChild(d);
   });
@@ -329,6 +633,7 @@ function buildStage(i){
   const vo=$('#voice');
   vo.textContent=(s.o&&s.o[L])||'';vo.classList.toggle('on',!!(s.o&&s.o[L]));
   whisper(s.in[L]);
+  requestAnimationFrame(layout);
   $('#hintBtn').textContent=t('hint');
   $('#hintBtn').classList.add('on');
   portal.classList.remove('open');
@@ -339,13 +644,21 @@ function buildStage(i){
 
 /* ---------- klik ---------- */
 scene.addEventListener('pointerup',e=>{
-  if(locked)return;
+  if(locked){if(pending)pending();return;}
   initAudio();
   const el=document.elementFromPoint(e.clientX,e.clientY);
   const h=el&&el.closest?el.closest('.hs'):null;
   if(h)return found(h,e);
   wrong();
 });
+spots.addEventListener('keydown',ev=>{
+  if(ev.key!=='Enter'&&ev.key!==' ')return;
+  const el=ev.target&&ev.target.closest?ev.target.closest('.hs'):null;
+  if(!el||locked)return;
+  ev.preventDefault();const r=el.getBoundingClientRect();
+  found(el,{clientX:r.left+r.width/2,clientY:r.top+r.height/2});
+});
+let pending=null;
 function found(el,e){
   locked=true;
   const s=D.stages[cur],r=scene.getBoundingClientRect();
@@ -356,7 +669,8 @@ function found(el,e){
   whisper(`<b>${ho.n[L]}</b> — ${ho.w[L]}`);
   const px=((e.clientX-r.left)/r.width)*100,py=((e.clientY-r.top)/r.height)*100;
   const nextImg=(cur+1<D.stages.length)?D.stages[cur+1].img:'assets/s11.webp';
-  setTimeout(()=>{
+  const goNext=()=>{if(cur+1<D.stages.length)buildStage(cur+1);else finale()};
+  const openPortal=()=>{
     portal.style.backgroundImage=`url('${nextImg}')`;
     portal.style.backgroundPosition='center';
     portal.style.clipPath=`circle(0px at ${px}% ${py}%)`;
@@ -364,11 +678,11 @@ function found(el,e){
     portal.classList.add('open');
     portal.style.clipPath=`circle(150% at ${px}% ${py}%)`;
     sfx('open');
-  },650);
-  setTimeout(()=>{
-    if(cur+1<D.stages.length)buildStage(cur+1);
-    else finale();
-  },1750);
+  };
+  const t1=setTimeout(()=>{if(s.out&&s.out[L])whisper(s.out[L])},2100);
+  const t2=setTimeout(openPortal,3600);
+  const t3=setTimeout(goNext,5200);
+  pending=()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);pending=null;openPortal();setTimeout(goNext,300)};
 }
 function wrong(){
   sfx('bad');
@@ -416,7 +730,14 @@ function applyLang(){
 }
 $('#bLang').onclick=()=>{
   L=L==='sk'?'en':'sk';LS.set('uiw_lang',L);applyLang();
-  if(started&&!locked)whisper(D.stages[cur].in[L]);
+  if(started){
+    const st=D.stages[cur]||{};
+    const vo=$('#voice');const o=(st.o&&st.o[L])||'';
+    vo.textContent=o;vo.classList.toggle('on',!!o);
+    if(!locked)whisper((st.in&&st.in[L])||'');
+    $('#hintBtn').textContent=t('hint');
+    label();layout();
+  }
 };
 function startGame(from){
   started=true;initAudio();
