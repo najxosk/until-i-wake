@@ -658,7 +658,6 @@ spots.addEventListener('keydown',ev=>{
   ev.preventDefault();const r=el.getBoundingClientRect();
   found(el,{clientX:r.left+r.width/2,clientY:r.top+r.height/2});
 });
-let pending=null;
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 let skipResolve=null;
 function found(el,e){
@@ -684,11 +683,11 @@ function found(el,e){
   };
   const skip=new Promise(res=>{skipResolve=res});
   (async()=>{
-    await Promise.race([sleep(2200),skip]);
+    await Promise.race([sleep(1900),skip]);
     if(s.out&&s.out[L])whisper(s.out[L]);
-    await Promise.race([sleep(1500),skip]);
+    await Promise.race([sleep(1350),skip]);
     openPortal();
-    await Promise.race([sleep(1700),skip]);
+    await Promise.race([sleep(1250),skip]);
     skipResolve=null;
     goNext();
   })();
