@@ -28,6 +28,9 @@ html,body{height:100%;overflow:hidden;background:#07060b;color:#f2ecdd;
 .hs.gone{pointer-events:none}
 #bar{flex:0 0 auto;padding:8px 14px 12px;min-height:74px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:6px;text-align:center}
+#voice{font-size:12.5px;letter-spacing:.01em;color:#9c8cad;font-style:italic;max-width:600px;
+  opacity:0;transition:opacity .8s;margin-bottom:2px}
+#voice.on{opacity:.9}
 #whisper{font-size:14px;line-height:1.35;font-style:italic;color:#cfc3dd;max-width:640px;
   opacity:0;transition:opacity .45s}
 #whisper.on{opacity:1}
@@ -72,6 +75,7 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
     </div>
   </div>
   <div id="bar">
+    <div id="voice"></div>
     <div id="whisper"></div>
     <button id="hintBtn"></button>
   </div>
@@ -98,42 +102,52 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
 
 const D={stages:[
  {img:'assets/s01.webp',t:{sk:'Kolíska',en:'The Cradle'},
+  o:{sk:'Ticho. Len prístroje a dážď za oknom.',en:'Quiet. Only the machines and the rain outside.'},
   in:{sk:'Niekto spieva. Niečo mäkké ma stráži z police.',en:'Someone is singing. Something soft is guarding me from the shelf.'},
   out:{sk:'Mama spievala, kým som nezaspala. Môj macko ma strážil z police.',en:'Mom sang until I fell asleep. My teddy watched over me from the shelf.'},
   h:{x:89.5,y:22,r:8,n:{sk:'O jedno svetlo na oblohe navyše',en:'One light too many in the sky'},w:{sk:'Mesiac aj slnko naraz. Sen si nedrží pravidlá.',en:'Moon and sun at once. A dream does not keep the rules.'}}},
  {img:'assets/s02.webp',t:{sk:'Škôlka',en:'Kindergarten'},
+  o:{sk:'…dýcha sama. To je dobrý znak.',en:'…she is breathing on her own. That is a good sign.'},
   in:{sk:'Svet bol prázdny papier a ja som chcela všetky farby.',en:'The world was a blank sheet and I wanted every colour.'},
   out:{sk:'Do každého obrázka som kreslila slnko. Aj do tých nočných.',en:'I drew a sun into every picture. Even the night ones.'},
-  h:{x:71.8,y:25.4,r:7,n:{sk:'Monitor s tepovou krivkou',en:'A monitor with a heartbeat line'},w:{sk:'V škôlke nepatrí pípanie z izby 214.',en:'Room 214 beeping has no place in a kindergarten.'}}},
+  h:{x:66.5,y:92.5,r:4.5,n:{sk:'Jednorazová rukavica',en:'A disposable glove'},w:{sk:'V škôlke sa nechávajú rukavice na hranie. Táto prišla z izby 214.',en:'In a kindergarten you leave the play gloves behind. This one came from room 214.'}}},
  {img:'assets/s03.webp',t:{sk:'Prvý deň v škole',en:'First Day of School'},
+  o:{sk:'Sestrička: „Hovorte na ňu. Počuje vás.“',en:'Nurse: “Talk to her. She can hear you.”'},
   in:{sk:'Mama ma pri dverách pustila za ruku. Bola som taká malá.',en:'Mum let go of my hand at the door. I was so small.'},
   out:{sk:'Zavesila som tašku na háčik a zostala. Bola som statočná.',en:'I hung my bag on the hook and stayed. I was brave.'},
   h:{x:60.5,y:90,r:7.5,n:{sk:'Plastové nazúvačky',en:'Plastic clogs'},w:{sk:'Medzi koženými topánkami jedno dieťa z inej doby.',en:'Among the leather shoes, one child from another time.'}}},
  {img:'assets/s04.webp',t:{sk:'Dospievanie',en:'Growing Up'},
+  o:{sk:'Adam neodchádza z izby ani na kávu.',en:'Adam has not left the room, not even for coffee.'},
   in:{sk:'Niektoré noci som si zapisovala, čo som nevedela povedať nahlas.',en:'Some nights I wrote down what I could not say aloud.'},
   out:{sk:'Moje tajomstvá mali malý zámok. Moje srdce nie.',en:'My secrets had a small lock. My heart did not.'},
   h:{x:33,y:75,r:13,n:{sk:'Cudzie kovové zábradlie',en:'The wrong metal rail'},w:{sk:'Jej posteľ bola vždy teplá. Toto je iná posteľ.',en:'Her bed was always warm. This is a different bed.'}}},
  {img:'assets/s05.webp',t:{sk:'Prvá láska',en:'First Love'},
+  o:{sk:'…mení sa jej pulz. Zavolajte rodinu.',en:'…her pulse is changing. Call the family.'},
   in:{sk:'Chodba bola dlhá a on sa tváril, že ide okolo. V ruke zložený papierik.',en:'The corridor was long and he pretended to walk past. A folded note in his hand.'},
   out:{sk:'Napísal, čo sa nikdy neodvážil povedať nahlas. Ten list som si nechala dvadsať rokov.',en:'He wrote what he never dared to say aloud. I kept that letter for twenty years.'},
   h:{x:15,y:82.5,r:5,n:{sk:'Nemocničný náramok',en:'A hospital wristband'},w:{sk:'Leží pri školskej lavici. Niekto ho stratil na ceste z izby 214.',en:'It lies by a school bench. Someone lost it on the way out of room 214.'}}},
- {img:'',t:{sk:'Odchod z domu',en:'Leaving Home'},
+ {img:'assets/s06.webp',t:{sk:'Odchod z domu',en:'Leaving Home'},
+  o:{sk:'Ema zaspala na dvoch stoličkách pri dverách.',en:'Ema fell asleep on two chairs by the door.'},
   in:{sk:'Štyri prázdne steny. A dvere, ktoré odomykám len ja.',en:'Four empty walls. And a door only I unlock.'},
   out:{sk:'Prvý kľúč, ktorý bol len môj. Bála som sa a tešila zároveň.',en:'The first key that was only mine. I was scared and glad at once.'},
   h:{x:53,y:16,r:11,n:{sk:'Studené svetlo zhora',en:'Cold light from above'},w:{sk:'Na dom je to svetlo príliš nemocničné.',en:'That light is far too hospital-cold for a home.'}}},
  {img:'assets/s07.webp',t:{sk:'Stretnutie s Adamom',en:'Meeting Adam'},
+  o:{sk:'…päť dní. Nikto nič nehovorí.',en:'…five days. Nobody says anything.'},
   in:{sk:'Daždivý utorok. Kaviareň. Cudzinec s láskavými očami.',en:'A rainy Tuesday. A café. A stranger with kind eyes.'},
   out:{sk:'Vylial mi kávu a kúpil mi novú. Rozprávali sme sa, až kým nezatvorili.',en:'He spilled my coffee and bought me another. We talked until they closed.'},
   h:{x:14.5,y:80,r:7.5,n:{sk:'Predlžovačka',en:'Power strip'},w:{sk:'V kaviarni, kde sa káva nalieva ručne.',en:'In a café where coffee is poured by hand.'}}},
  {img:'assets/s08.webp',t:{sk:'Svadba',en:'The Wedding'},
+  o:{sk:'Adam jej číta listy, ktoré jej kedysi písal.',en:'Adam reads her the letters he once wrote.'},
   in:{sk:'Všetci, ktorých som ľúbila, v jednej záhrade.',en:'Everyone I loved, in one garden.'},
   out:{sk:'„Navždy,“ povedal. Verila som mu. Stále verím.',en:'“Forever,” he said. I believed him. I still do.'},
   h:{x:26.5,y:59,r:12,n:{sk:'Niekto v modrom',en:'Someone in blue'},w:{sk:'Prišla z izby 214. Ako hosť.',en:'She came from room 214. As a guest.'}}},
  {img:'assets/s09.webp',t:{sk:'Ema a Tomi',en:'Ema and Tom'},
+  o:{sk:'Lekár: „Dnes prvýkrát stlačila mi ruku.“',en:'Doctor: “Today she squeezed my hand for the first time.”'},
   in:{sk:'Dva malé hlásky. Lepkavé ruky. Domov.',en:'Two small voices. Sticky hands. Home.'},
   out:{sk:'Ema nás nakreslila, ako sa držíme za ruky. „Aby sa nikto nestratil,“ povedala.',en:'Ema drew us holding hands. “So nobody gets lost,” she said.'},
-  h:{x:89,y:21,r:12,n:{sk:'Televízor na stene',en:'A television on the wall'},w:{sk:'Dom, kde sa večer rozprávalo, nemá mať čo mlčať.',en:'A home where evenings were for talking has no use for this.'}}},
+  h:{x:57.8,y:90.5,r:4.5,n:{sk:'Blister s liekmi',en:'A blister pack of pills'},w:{sk:'Pri detských kresbách nechal niekto lieky z izby 214.',en:'Someone left the pills from room 214 beside the drawings of the children.'}}},
  {img:'assets/s10.webp',t:{sk:'Dážď',en:'The Rain'},
+  o:{sk:'„…Mami? Prosím, zobuď sa.“',en:'“…Mom? Please wake up.”'},
   in:{sk:'Len trochu dažďa. Skoro doma.',en:'Only a little rain. Almost home.'},
   out:{sk:'Svetlá. Zvuk, akoby sa trhalo celé nebo. A potom—',en:'Lights. A sound like the sky tearing. And then—'},
   h:{x:71,y:57,r:9,n:{sk:'Nemocničná posteľ',en:'A hospital bed'},w:{sk:'Na ulici stojí niečo, čo patrí do izby 214.',en:'Something that belongs to room 214 is standing in the street.'}}},
@@ -222,6 +236,8 @@ function buildStage(i){
   d.style.left=s.h.x+'%';d.style.top=s.h.y+'%';d.style.width=(s.h.r*2)+'%';
   spots.appendChild(d);
   label();layout();
+  const vo=$('#voice');
+  vo.textContent=(s.o&&s.o[L])||'';vo.classList.toggle('on',!!(s.o&&s.o[L]));
   whisper(s.in[L]);
   $('#hintBtn').textContent=t('hint');
   $('#hintBtn').classList.add('on');
