@@ -54,9 +54,18 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
   font:inherit;font-size:16px;font-weight:600;cursor:pointer}
 .ghost{margin-top:10px;background:none;border:1px solid #453b58;color:#c3b7d4;border-radius:12px;
   padding:12px 24px;font:inherit;font-size:14px;cursor:pointer}
-#endInner{max-width:560px;background:#f6efdfee;border-radius:16px;padding:26px 18px;color:#171320}
-#endInner p{font-size:15px;line-height:1.6;margin-top:14px}
-.credits{font-size:11px;margin-top:24px;line-height:1.7}
+#end{align-items:flex-start;justify-content:flex-end;padding:22px}
+#endInner{max-width:min(470px,94vw);background:rgba(10,9,16,.85);border-radius:18px;padding:22px 24px;
+  text-align:left;color:#f4eee4;backdrop-filter:blur(8px);box-shadow:0 20px 60px #000b}
+#endInner h1{color:#f8f3e9;font-size:clamp(20px,3vw,28px);margin:0;line-height:1.2}
+#endInner h1 small{display:block;margin-top:7px;font-size:11.5px;font-weight:600;letter-spacing:.07em;
+  text-transform:uppercase;color:#c6b9a2}
+#endInner p{font-size:14.5px;line-height:1.62;margin-top:12px;color:#ece5d9}
+#endInner p.last{font-style:italic;font-weight:600;color:#f8f3e9;margin-top:10px}
+#endInner p.sum{font-size:13.8px;color:#d9cfbe;border-left:2px solid #8d7c60;padding-left:12px;margin-top:16px}
+#endInner .creds{font-size:11px;color:#a89c89;margin-top:16px;line-height:1.6}
+@media(max-width:620px){#end{align-items:center;justify-content:flex-end;padding:10px}
+ #endInner{max-width:97vw;padding:15px 16px}#endInner p{font-size:13px}#endInner p.sum{font-size:12.4px}}
 
 .rid{max-width:640px;background:rgba(9,8,13,.68);padding:24px 28px 20px;border-radius:22px;
   box-shadow:0 18px 60px #000a;backdrop-filter:blur(6px)}
@@ -120,10 +129,10 @@ const D={stages:[
   out:{sk:'Mama spievala, kým som nezaspala. Môj macko ma strážil z police.',en:'Mom sang until I fell asleep. My teddy watched over me from the shelf.'},
   h:{x:89.5,y:22,r:8,n:{sk:'O jedno svetlo na oblohe navyše',en:'One light too many in the sky'},w:{sk:'Mesiac aj slnko naraz. Sen si nedrží pravidlá.',en:'Moon and sun at once. A dream does not keep the rules.'}}},
  {img:'assets/s02.webp',t:{sk:'Škôlka',en:'Kindergarten'},
-  o:{sk:'…dýcha sama. To je dobrý znak.',en:'…she is breathing on her own. That is a good sign.'},
-  in:{sk:'Svet bol prázdny papier a ja som chcela všetky farby.',en:'The world was a blank sheet and I wanted every colour.'},
-  out:{sk:'Do každého obrázka som kreslila slnko. Aj do tých nočných.',en:'I drew a sun into every picture. Even the night ones.'},
-  h:[{x:80,y:44,r:5,n:{sk:'Stetoskop v polici',en:'A stethoscope on the shelf'},w:{sk:'Medzi hračkami v polici leží stetoskop. V škôlke ho nikto nepotrebuje.',en:'A stethoscope lies among the toys on the shelf. Nobody in a kindergarten needs one.'}},{x:89,y:74.5,r:5,n:{sk:'Monitor na zemi',en:'A monitor on the floor'},w:{sk:'Na koberci pri deťoch leží monitor z izby 214.',en:'A monitor from room 214 lies on the rug beside the children.'}}]},
+  o:{sk:'„…dýcha sama. To je dobrý znak.“',en:'“…she is breathing on her own. That is a good sign.”'},
+  in:{sk:'Kocky, kriedy, detský smiech. A niečo tu nesedí.',en:'Blocks, chalk, children laughing. And something is out of place.'},
+  out:{sk:'Cez koberec prešla vlna, ktorá tam nepatrila.',en:'A wave crossed the rug that did not belong there.'},
+  h:{x:87,y:74.5,r:5,n:{sk:'Monitor na koberci',en:'A monitor on the rug'},w:{sk:'Na koberci pri deťoch leží monitor z izby 214.',en:'A monitor from room 214 lies on the rug beside the children.'}}},
  {img:'assets/s03.webp',t:{sk:'Prvý deň v škole',en:'First Day of School'},
   o:{sk:'Sestrička: „Hovorte na ňu. Počuje vás.“',en:'Nurse: “Talk to her. She can hear you.”'},
   in:{sk:'Mama ma pri dverách pustila za ruku. Bola som taká malá.',en:'Mum let go of my hand at the door. I was so small.'},
@@ -140,10 +149,10 @@ const D={stages:[
   out:{sk:'Napísal, čo sa nikdy neodvážil povedať nahlas. Ten list som si nechala dvadsať rokov.',en:'He wrote what he never dared to say aloud. I kept that letter for twenty years.'},
   h:{x:15,y:82.5,r:5,n:{sk:'Nemocničný náramok',en:'A hospital wristband'},w:{sk:'Leží pri školskej lavici. Niekto ho stratil na ceste z izby 214.',en:'It lies by a school bench. Someone lost it on the way out of room 214.'}}},
  {img:'assets/s06.webp',t:{sk:'Odchod z domu',en:'Leaving Home'},
-  o:{sk:'Ema zaspala na dvoch stoličkách pri dverách.',en:'Ema fell asleep on two chairs by the door.'},
-  in:{sk:'Štyri prázdne steny. A dvere, ktoré odomykám len ja.',en:'Four empty walls. And a door only I unlock.'},
-  out:{sk:'Prvý kľúč, ktorý bol len môj. Bála som sa a tešila zároveň.',en:'The first key that was only mine. I was scared and glad at once.'},
-  h:{x:69.2,y:89.9,r:5,n:{sk:'Nemocničný prezúvok',en:'A hospital slipper'},w:{sk:'Pod posteľou v novom byte leží prezúvok z nemocnice.',en:'A hospital slipper lies under the bed of a brand-new flat.'}}},
+  o:{sk:'„Ema zaspala na dvoch stoličkách pri dverách.“',en:'“Ema fell asleep on two chairs by the door.”'},
+  in:{sk:'Prázdny byt, krabice, nový začiatok.',en:'An empty flat, boxes, a new beginning.'},
+  out:{sk:'Svetlo zhora bolo príliš biele na obyčajný byt.',en:'The light from above was too white for an ordinary flat.'},
+  h:{x:46.5,y:6.5,r:9,n:{sk:'Nemocničné svetlo na strope',en:'A hospital light on the ceiling'},w:{sk:'Dlhé biele svetlo z nemocničnej chodby svieti v novom byte.',en:'The long white light of a hospital corridor is shining in the new flat.'}}},
  {img:'assets/s07.webp',t:{sk:'Stretnutie s Adamom',en:'Meeting Adam'},
   o:{sk:'…päť dní. Nikto nič nehovorí.',en:'…five days. Nobody says anything.'},
   in:{sk:'Daždivý utorok. Kaviareň. Cudzinec s láskavými očami.',en:'A rainy Tuesday. A café. A stranger with kind eyes.'},
@@ -161,9 +170,9 @@ const D={stages:[
   h:{x:7.5,y:51,r:5.5,n:{sk:'Skúmavky pri kávovare',en:'Test tubes by the kettle'},w:{sk:'Pri rannej káve stoja skúmavky. Tie patria do laboratória, nie do kuchyne.',en:'Test tubes stand beside the morning coffee. They belong to a laboratory, not a kitchen.'}}},
  {img:'assets/s10.webp',t:{sk:'Dážď',en:'The Rain'},
   o:{sk:'„…Mami? Prosím, zobuď sa.“',en:'“…Mom? Please wake up.”'},
-  in:{sk:'Len trochu dažďa. Skoro doma.',en:'Only a little rain. Almost home.'},
+  in:{sk:'Prechod, dážď, mokrý asfalt. Skoro doma.',en:'A crossing, rain, wet asphalt. Almost home.'},
   out:{sk:'Svetlá. Zvuk, akoby sa trhalo celé nebo. A potom—',en:'Lights. A sound like the sky tearing. And then—'},
-  h:{x:64.5,y:47,r:9,n:{sk:'Svetlá na ceste',en:'Lights on the road'},w:{sk:'Dve svetlá v daždi. To je posledné, čo som videla.',en:'Two headlights in the rain. That is the last thing I saw.'}}},
+  h:{x:63,y:53,r:9,n:{sk:'Auto za chrbtom',en:'A car behind her'},w:{sk:'V daždi prechádzam cez prechod. Za mnou ide auto.',en:'I am crossing the street in the rain. A car is coming behind me.'}}},
 ]};
 
 const T={
@@ -175,6 +184,7 @@ const T={
   last:'I am awake. You are all here. Every stage of my life was leading me back to you.',
   ep:'Elena, 38. Wife of Adam. Mother of Ema and Tom. Her body sleeps in room 214. Her mind is still walking home.',
   credits:'The End',credits2:'Human: concept, story, Elena’s character, game direction. Made with AI assistance.',
+  sum:'What happened: on a rainy evening Elena was walking home across the pedestrian crossing. A car came out of the mist behind her - the driver never saw her in the rain. It hit her on the crossing. She lay in a coma in room 214 for eleven days. What she lived through: her mind walked back through her whole life - the cradle, kindergarten, first love, the wedding, the children, the road home. In every memory one thing did not belong, and exactly those things led her back. How it ended: she woke up. Adam, Ema and Tomi were sitting beside her bed.',
   ridQ:'One last question before you wake up: what took Elena off that street?',
   ridA:['The rain','A car','The hospital'],
   ridOk:'Yes. Two headlights, wet asphalt — and then room 214.',
@@ -188,6 +198,7 @@ const T={
   last:'Som hore. Ste tu všetci. Každá etapa môjho života ma viedla späť k vám.',
   ep:'Elena, 38 rokov. Manželka Adama. Mama Emy a Tomiho. Jej telo spí v izbe 214. Jej myseľ ešte kráča domov.',
   credits:'Koniec',credits2:'Človek: nápad, príbeh, postava Eleny, smerovanie hry. Vytvorené s pomocou AI.',
+  sum:'Čo sa stalo: Elena sa v daždivom večeri vracala domov cez prechod pre chodcov. Za jej chrbtom sa z hmly vynorilo auto — v daždi ju vodič nevidel. Zrazil ju na prechode. Jedenásť dní ležala v kóme v izbe 214. Čo prežila: jej myseľ prešla celým jej životom — kolíska, škôlka, prvá láska, svadba, deti, cesta domov. V každej spomienke bola jedna vec, ktorá tam nepatrila, a práve tie ju viedli späť. Ako to dopadlo: prebudila sa. Pri posteli sedeli Adam, Ema a Tomi.',
   ridQ:'Ešte jedna otázka, kým sa zobudíš: čo vzalo Elenu z tej cesty?',
   ridA:['Dážď','Auto','Nemocnica'],
   ridOk:'Áno. Dve svetlá, mokrý asfalt — a potom izba 214.',
@@ -346,10 +357,11 @@ function buildRiddle(){
 function finale(){
   setTimeout(()=>{
     $('#endInner').innerHTML=`
-      <h1 style="color:#171320">${t('finT')}<small style="color:#5b5268">${t('title')} · ${t('series')}</small></h1>
-      <p style="font-style:italic;color:#2a2438;font-weight:600">${t('last')}</p>
-      <p style="color:#3a3348">${t('ep')}</p>
-      <p class="credits" style="color:#5b5268">${t('credits')}<br>${t('credits2')}</p>
+      <h1>${t('finT')}<small>${t('title')} · ${t('series')}</small></h1>
+      <p class="last">${t('last')}</p>
+      <p>${t('ep')}</p>
+      <p class="sum">${t('sum')}</p>
+      <p class="creds">${t('credits')} · ${t('credits2')}</p>
       <button class="big" id="bAgain">${t('again')}</button>`;
     $('#end').style.backgroundImage="url('assets/s11.webp')";
     show('end');
