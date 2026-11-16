@@ -57,6 +57,17 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
 #endInner{max-width:560px;background:#f6efdfee;border-radius:16px;padding:26px 18px;color:#171320}
 #endInner p{font-size:15px;line-height:1.6;margin-top:14px}
 .credits{font-size:11px;margin-top:24px;line-height:1.7}
+
+.rid{max-width:640px}
+#riddle h1{font-size:clamp(19px,3vw,30px);line-height:1.3;color:#f5efe6;text-shadow:0 2px 18px #000b;margin:0 0 20px;font-weight:800}
+#riddle .chips{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+#riddle .chips button{font:inherit;font-weight:800;font-size:17px;padding:14px 26px;min-height:52px;border-radius:99px;
+  border:1px solid #ffffff55;background:#0b0910cc;color:#f5efe6;cursor:pointer}
+#riddle .chips button:hover{background:#1a1626e6}
+#riddle .chips button.ok{background:#2f7d5acc;border-color:#8fe3b8;color:#fff}
+#riddle .chips button.bad{animation:sh .45s}
+#riddle .ridmsg{margin-top:18px;min-height:26px;font-style:italic;color:#e9e2d6;text-shadow:0 2px 12px #000b}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 </style>
 </head>
 <body>
@@ -91,6 +102,7 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
   </div>
 </div>
 
+<div id="riddle" class="screen"><div class="rid"><h1 id="ridQ"></h1><div id="ridA" class="chips"></div><p id="ridMsg" class="ridmsg"></p></div></div>
 <div id="end" class="screen"><div id="endInner"></div></div>
 
 <script>
@@ -150,7 +162,7 @@ const D={stages:[
   o:{sk:'„…Mami? Prosím, zobuď sa.“',en:'“…Mom? Please wake up.”'},
   in:{sk:'Len trochu dažďa. Skoro doma.',en:'Only a little rain. Almost home.'},
   out:{sk:'Svetlá. Zvuk, akoby sa trhalo celé nebo. A potom—',en:'Lights. A sound like the sky tearing. And then—'},
-  h:{x:84.5,y:70.5,r:7,n:{sk:'Nemocničná deka',en:'A hospital blanket'},w:{sk:'Cez zábradlie pri ceste je prehodená deka z izby 214.',en:'A blanket from room 214 hangs over the railing by the road.'}}},
+  h:{x:64.5,y:47,r:9,n:{sk:'Svetlá na ceste',en:'Lights on the road'},w:{sk:'Dve svetlá v daždi. To je posledné, čo som videla.',en:'Two headlights in the rain. That is the last thing I saw.'}}},
 ]};
 
 const T={
@@ -162,6 +174,10 @@ const T={
   last:'I am awake. You are all here. Every stage of my life was leading me back to you.',
   ep:'Elena, 38. Wife of Adam. Mother of Ema and Tom. Her body sleeps in room 214. Her mind is still walking home.',
   credits:'The End',credits2:'Human: concept, story, Elena’s character, game direction. Made with AI assistance.',
+  ridQ:'One last question before you wake up: what took Elena off that street?',
+  ridA:['The rain','A car','The hospital'],
+  ridOk:'Yes. Two headlights, wet asphalt — and then room 214.',
+  ridNo:'Not that. Think of the last thing she saw.',
   miss:['That belongs here.','Not that one.','Keep looking.']},
  sk:{series:'Snílkovia · Príbeh I',title:'Kým sa zobudím',
   intro:'Dážď. Svetlá áut. Potom ticho. Elena je už jedenásť dní v kóme. Niekde hlboko vo vnútri stále sníva a prechádza späť každou etapou svojho života. V každej spomienke je jedna vec, ktorá tam nepatrí. Ťukni na ňu — a sen sa otvorí.',
@@ -171,6 +187,10 @@ const T={
   last:'Som hore. Ste tu všetci. Každá etapa môjho života ma viedla späť k vám.',
   ep:'Elena, 38 rokov. Manželka Adama. Mama Emy a Tomiho. Jej telo spí v izbe 214. Jej myseľ ešte kráča domov.',
   credits:'Koniec',credits2:'Človek: nápad, príbeh, postava Eleny, smerovanie hry. Vytvorené s pomocou AI.',
+  ridQ:'Ešte jedna otázka, kým sa zobudíš: čo vzalo Elenu z tej cesty?',
+  ridA:['Dážď','Auto','Nemocnica'],
+  ridOk:'Áno. Dve svetlá, mokrý asfalt — a potom izba 214.',
+  ridNo:'To nie. Spomeň si, čo videla naposledy.',
   miss:['To sem patrí.','Toto nie.','Hľadaj ďalej.']}
 };
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}},
@@ -281,7 +301,7 @@ function found(el,e){
   },650);
   setTimeout(()=>{
     if(cur+1<D.stages.length)buildStage(cur+1);
-    else finale();
+    else buildRiddle();
   },1750);
 }
 function wrong(){
@@ -296,6 +316,30 @@ $('#hintBtn').onclick=()=>{
   const hs=spots.querySelector('.hs');
   if(hs){hs.classList.add('ping');setTimeout(()=>hs.classList.remove('ping'),1200)}
 };
+
+function buildRiddle(){
+  const d=D.stages[D.stages.length-1];
+  $('#riddle').style.backgroundImage="url('"+d.img+"')";
+  $('#ridQ').textContent=t('ridQ');
+  const msg=$('#ridMsg'); msg.textContent='';
+  const box=$('#ridA'); box.innerHTML='';
+  t('ridA').forEach((label,i)=>{
+    const b=document.createElement('button');
+    b.textContent=label;
+    b.onclick=()=>{
+      if(i===1){
+        b.classList.add('ok'); msg.textContent=t('ridOk'); sfx('open');
+        box.querySelectorAll('button').forEach(x=>x.disabled=true);
+        setTimeout(()=>finale(),1700);
+      }else{
+        b.classList.add('bad'); msg.textContent=t('ridNo'); sfx('miss');
+        setTimeout(()=>b.classList.remove('bad'),460);
+      }
+    };
+    box.appendChild(b);
+  });
+  show('riddle');
+}
 
 /* ---------- koniec ---------- */
 function finale(){
