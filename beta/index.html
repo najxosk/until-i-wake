@@ -19,7 +19,7 @@ html,body{height:100%;overflow:hidden;background:#07060b;color:#f2ecdd;
 .tbtn{background:none;border:1px solid #3a3348;color:#b9aec9;border-radius:7px;padding:5px 9px;font:inherit;font-size:12px;cursor:pointer}
 #stage{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #scene{position:relative;overflow:hidden;background:#07060b;box-shadow:0 0 60px #0009}
-#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
   -webkit-user-drag:none;user-select:none;pointer-events:none}
 #spots{position:absolute;inset:0}
 .hs{position:absolute;transform:translate(-50%,-50%);border-radius:50%;min-width:46px;min-height:46px;
@@ -83,6 +83,7 @@ h1 small{display:block;font-size:.42em;color:#a99bbd;letter-spacing:.22em;text-t
     <div id="stageLbl"></div>
     <button class="tbtn" id="bSnd">🔊</button>
     <button class="tbtn" id="bLang">EN</button>
+    <button class="tbtn" id="bFull" title="Fullscreen">⛶</button>
   </div>
   <div id="stage">
     <div id="scene">
@@ -576,6 +577,20 @@ function layout(){
   scene.style.width=w+'px';scene.style.height=h+'px';
 }
 addEventListener('resize',layout);
+/* --- fullscreen --- */
+(function(){
+  const b=$('#bFull'),el=document.documentElement;
+  const fs=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  const req=el.requestFullscreen||el.webkitRequestFullscreen;
+  if(!req||window.matchMedia('(display-mode: standalone)').matches){b.style.display='none';return}
+  b.onclick=()=>{
+    if(fs()){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+    else { req.call(el).catch(()=>{}); }
+  };
+  const upd=()=>{ b.textContent=fs()?'⤢':'⛶'; setTimeout(layout,120); };
+  document.addEventListener('fullscreenchange',upd);
+  document.addEventListener('webkitfullscreenchange',upd);
+})();
 addEventListener('orientationchange',()=>setTimeout(layout,220));
 
 function whisper(html){
